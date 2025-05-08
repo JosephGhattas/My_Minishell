@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 12:29:25 by jghattas          #+#    #+#             */
-/*   Updated: 2025/05/08 13:18:51 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/05/08 14:45:55 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,16 @@ int	is_numeric(const char *s)
 
 	if (!s)
 		return (0);
-    i = 0;
-    if (s[0] == '-' || s[0] == '+')
+	i = 0;
+	if (s[0] == '-' || s[0] == '+')
 		i++;
-    while (s[i])
+	while (s[i])
 	{
-        if (!ft_isdigit(s[i]))
+		if (!ft_isdigit(s[i]))
 			return (0);
-        i++;
-    }
-    return (1);
+		i++;
+	}
+	return (1);
 }
 
 int	my_exit(int argc, char **argv)
@@ -35,21 +35,18 @@ int	my_exit(int argc, char **argv)
 	int	code;
 
 	printf("exit\n");
-
-    if (argc == 1)
-        exit(0);
-
-    if (!is_numeric(argv[1]))
+	if (argc == 1)
+		exit(0);
+	if (!is_numeric(argv[1]))
 	{
-        printf("exit: %s: numeric argument required\n", argv[1]);
-        exit(255);
-    }
-    if (argc > 2)
+		printf("exit: %s: numeric argument required\n", argv[1]);
+		exit(255);
+	}
+	if (argc > 2)
 	{
-        printf("exit: too many arguments\n");
-        return (1);
-    }
-
+		printf("exit: too many arguments\n");
+		return (1);
+	}
 	code = ft_atoi(argv[1]);
-    exit(code);
+	exit(code);
 }

@@ -6,11 +6,13 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 11:31:14 by jghattas          #+#    #+#             */
-/*   Updated: 2025/05/08 13:38:46 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/05/08 14:47:45 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+// check function lines
 
 int	my_export(int argc, char **argv, char ***envp)
 {
@@ -27,7 +29,7 @@ int	my_export(int argc, char **argv, char ***envp)
 
 	while (i < argc)
 	{
-		eq = ft_strchr(argv[i], '=');  //use my own
+		eq = ft_strchr(argv[i], '=');
         if (!eq)
 		{
 			printf("export: '%s' not a valid format (must be NAME=VAL)\n", argv[i]);
@@ -37,7 +39,7 @@ int	my_export(int argc, char **argv, char ***envp)
 		j = 0;
         while ((*envp)[j])
 		{
-            if (strncmp((*envp)[j], argv[i], eq - argv[i]) == 0 &&    // fix strncmp in libft and add strcmp ;;)
+            if (ft_strncmp((*envp)[j], argv[i], eq - argv[i]) == 0 &&
                 (*envp)[j][eq - argv[i]] == '=')
 			{
 				free((*envp)[j]);

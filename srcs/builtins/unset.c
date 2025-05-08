@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 12:28:25 by jghattas          #+#    #+#             */
-/*   Updated: 2025/05/08 13:44:15 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/05/08 14:22:18 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	my_unset(int argc, char **argv, char ***envp)
 
         while ((*envp)[j])
 		{
-            if (strncmp((*envp)[j], name, len) == 0 && (*envp)[j][len] == '=') //use my own
+            if (ft_strncmp((*envp)[j], name, len) == 0 && (*envp)[j][len] == '=')
 			{
 				free((*envp)[j]);
 				k = j;
