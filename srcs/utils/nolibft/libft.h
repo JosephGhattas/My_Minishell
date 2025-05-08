@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 19:20:20 by jghattas          #+#    #+#             */
-/*   Updated: 2025/05/08 13:27:49 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/05/08 14:20:33 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void			ft_putnbr_fd(int n, int fd);
 void			ft_putstr_fd(char *s, int fd);
 char			**ft_split(char const *s, char c);
 char			*ft_strchr(const char *s, int c);
-int				ft_strcmp(const char *s1, const char *s2);
+int				ft_strncmp(const char *s1, const char *s2, size_t n);
 char			*ft_strdup(char *src);
 char			*ft_strjoin(char const *s1, char const *s2);
 size_t			ft_strlcat(char *dest, char *src, size_t size);
@@ -52,7 +52,7 @@ int				ft_tolower(int c);
 int				ft_toupper(int c);
 char			*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void			ft_striteri(char *s, void (*f)(unsigned int, char*));
-
+int				ft_strcmp(char *s1, char *s2);
 typedef struct s_list
 {
 	void			*content;
