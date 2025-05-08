@@ -2,36 +2,29 @@
 
 void	free_array(char **arr)
 {
-	size_t	i;
+	int	i;
 
+	if (!arr)
+		return ;
 	i = 0;
 	while (arr[i])
-	{
-		free(arr[i]);
-		i++;
-	}
+		free(arr[i++]);
 	free(arr);
 }
 
-static char	*my_getenv(char *name, char **envp)
+char	*my_getenv(char *name, char **envp)
 {
 	int		i;
-	int		j;
-	char	*str;
+	int		len;
 
 	i = 0;
 	while (envp[i])
 	{
-		j = 0;
-		while (envp[i][j] && envp[i][j] != '=')
-			j++;
-		str = ft_substr(envp[i], 0, j);
-		if (ft_strcmp(str, name) == 0)
-		{
-			free(str);
-			return (envp[i] + j + 1);
-		}
-		free(str);
+		len = 0;
+		while (envp[i][len] && envp[i][len] != '=')
+			len++;
+		if (!strncmp(envp[i], name, len) && envp[i][len] == '=') //use my own after fixing
+			return (envp[i] + len + 1);
 		i++;
 	}
 	return (NULL);
@@ -39,52 +32,79 @@ static char	*my_getenv(char *name, char **envp)
 
 char	*find_path(char *cmd, char **envp)
 {
-	int		i;
-	char	*exec;
-	char	**allpaths;
+	char	**paths;
 	char	*path;
-	char	**cmd1;
+	char	*full;
+	int		i;
 
+	if (!cmd || ft_strchr(cmd, '/'))
+		return (ft_strdup(cmd));
+	paths = ft_split(my_getenv("PATH", envp), ':');
+	if (!paths)
+		return (ft_strdup(cmd));
 	i = -1;
-	allpaths = ft_split(my_getenv("PATH", envp), ':');
-	cmd1 = ft_split(cmd, ' ');
-	while (allpaths[++i])
+	while (paths[++i])
 	{
-		path = ft_strjoin(allpaths[i], "/");
-		exec = ft_strjoin(path, cmd1[0]);
+		path = ft_strjoin(paths[i], "/");
+		full = ft_strjoin(path, cmd);
 		free(path);
-		if (access(exec, F_OK | X_OK) == 0)
-		{
-			free_array(cmd1);
-			free_array(allpaths);
-			return (exec);
-		}
-		free(exec);
+		if (access(full, F_OK | X_OK) == 0)
+			return (free_array(paths), full);
+		free(full);
 	}
-	free_array(allpaths);
-	free_array(cmd1);
-	return (cmd);
+	return (free_array(paths), ft_strdup(cmd));
+}
+
+static void	redirect_io(t_command *cmd)
+{
+	int	fd;
+
+	if (cmd->infile)
+	{
+		fd = open(cmd->infile, O_RDONLY);
+		if (fd < 0)
+		{
+			perror("infile");
+			exit(1);
+		}
+		dup2(fd, 0);
+		close(fd);
+	}
+	if (cmd->outfile)
+	{
+		fd = open(cmd->outfile, O_WRONLY | O_CREAT |
+				(cmd->append ? O_APPEND : O_TRUNC), 0644);
+		if (fd < 0)
+		{
+			perror("outfile");
+			exit(1);
+		}
+		dup2(fd, 1);
+		close(fd);
+	}
 }
 
 int	execute_command(t_command *cmd)
 {
-    pid_t	pid;
-    int		status;
+	pid_t	pid;
+	int		status;
+	char	*path;
 
-    if (!cmd || !cmd->argv || !cmd->argv[0])
+	if (!cmd || !cmd->argv || !cmd->argv[0])
 		return (1);
 	if (is_builtin(cmd->argv[0]))
 		return (run_builtin(cmd->argc, cmd->argv, &cmd->envp));
 	pid = fork();
 	if (pid == 0)
-    {
-		execve(find_path(cmd->argv[0], cmd->envp), cmd->argv, cmd->envp);
+	{
+		redirect_io(cmd);
+		path = find_path(cmd->argv[0], cmd->envp);
+		execve(path, cmd->argv, cmd->envp);
+		free(path);
 		perror("execve");
-		exit(EXIT_FAILURE);
-    }
-    else
-    {
-        waitpid(pid, &status, 0);
-        return (WEXITSTATUS(status));
-    }
+		exit(1);
+	}
+	waitpid(pid, &status, 0);
+	return (WEXITSTATUS(status));
 }
+
