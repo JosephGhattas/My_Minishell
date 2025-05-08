@@ -1,48 +1,50 @@
-#include <string.h> //replace strcmp with my own
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/08 14:23:34 by jghattas          #+#    #+#             */
+/*   Updated: 2025/05/08 14:37:39 by jghattas         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int		my_cd(int argc, char **argv);
-int		my_pwd(void);
-int		my_echo(int argc, char**argv);
-char	**copy_env(char **envp);
-int		my_env(int argc, char **argv, char ***my_env);
-int		my_export(int argc, char **argv, char ***envp);
-int		my_unset(int argc, char **argv, char ***envp);
-int		my_exit(int argc, char **argv);
+#include "minishell.h"
 
 int	is_builtin(const char *cmd)
 {
-    if (!cmd)
+	if (!cmd)
 		return (0);
-    return (!strcmp(cmd, "cd") ||
-            !strcmp(cmd, "echo") ||
-            !strcmp(cmd, "pwd") ||
-            !strcmp(cmd, "export") ||
-            !strcmp(cmd, "unset") ||
-            !strcmp(cmd, "env") ||
-            !strcmp(cmd, "exit"));
+	return (!ft_strcmp(cmd, "cd")
+		|| !ft_strcmp(cmd, "echo")
+		|| !ft_strcmp(cmd, "pwd")
+		|| !ft_strcmp(cmd, "export")
+		|| !ft_strcmp(cmd, "unset")
+		|| !ft_strcmp(cmd, "env")
+		|| !ft_strcmp(cmd, "exit"));
 }
 
-int run_builtin(int argc, char **argv, char ***envp)
+int	run_builtin(int argc, char **argv, char ***envp)
 {
-    if (!argv || !argv[0])
-        return (1);
-    if (!strcmp(argv[0], "cd"))
-        return (my_cd(argc, argv));
-    else if (!strcmp(argv[0], "echo"))
-        return (my_echo(argc, argv));
-    else if (!strcmp(argv[0], "pwd"))
-        return (my_pwd());
-    else if (!strcmp(argv[0], "export"))
-        return (my_export(argc, argv, envp));
-    else if (!strcmp(argv[0], "unset"))
-        return (my_unset(argc, argv, envp));
-    else if (!strcmp(argv[0], "env"))
-        return (my_env(argc, argv, envp));
-    else if (!strcmp(argv[0], "exit"))
-    {
-        my_exit(argc, argv);
-        return (0);
-    }
-    return (1);
+	if (!argv || !argv[0])
+		return (1);
+	if (!ft_strcmp(argv[0], "cd"))
+		return (my_cd(argc, argv));
+	else if (!ft_strcmp(argv[0], "echo"))
+		return (my_echo(argc, argv));
+	else if (!ft_strcmp(argv[0], "pwd"))
+		return (my_pwd());
+	else if (!ft_strcmp(argv[0], "export"))
+		return (my_export(argc, argv, envp));
+	else if (!ft_strcmp(argv[0], "unset"))
+		return (my_unset(argc, argv, envp));
+	else if (!ft_strcmp(argv[0], "env"))
+		return (my_env(argc, argv, envp));
+	else if (!ft_strcmp(argv[0], "exit"))
+	{
+		my_exit(argc, argv);
+		return (0);
+	}
+	return (1);
 }

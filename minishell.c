@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/08 14:24:15 by jghattas          #+#    #+#             */
+/*   Updated: 2025/05/08 14:33:36 by jghattas         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	main(int argc, char **argv, char **envp)
@@ -7,9 +19,7 @@ int	main(int argc, char **argv, char **envp)
     my_env = copy_env(envp);
     (void)argc;
     (void)argv;
-
     printbanner();
-
     // Simulated parsed command: env
     t_command cmd1 = {
         .argv = (char *[]){"env", NULL},

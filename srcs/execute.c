@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/08 14:23:42 by jghattas          #+#    #+#             */
+/*   Updated: 2025/05/08 14:41:35 by jghattas         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 void	free_array(char **arr)
@@ -23,7 +35,7 @@ char	*my_getenv(char *name, char **envp)
 		len = 0;
 		while (envp[i][len] && envp[i][len] != '=')
 			len++;
-		if (!strncmp(envp[i], name, len) && envp[i][len] == '=') //use my own after fixing
+		if (!ft_strncmp(envp[i], name, len) && envp[i][len] == '=')
 			return (envp[i] + len + 1);
 		i++;
 	}
@@ -72,8 +84,8 @@ static void	redirect_io(t_command *cmd)
 	}
 	if (cmd->outfile)
 	{
-		fd = open(cmd->outfile, O_WRONLY | O_CREAT |
-				(cmd->append ? O_APPEND : O_TRUNC), 0644);
+		fd = open(cmd->outfile, O_WRONLY | O_CREAT
+				|(cmd->append ? O_APPEND : O_TRUNC), 0644);
 		if (fd < 0)
 		{
 			perror("outfile");
@@ -107,4 +119,3 @@ int	execute_command(t_command *cmd)
 	waitpid(pid, &status, 0);
 	return (WEXITSTATUS(status));
 }
-
