@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 12:28:57 by jghattas          #+#    #+#             */
-/*   Updated: 2025/03/28 12:31:17 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/05/08 13:36:56 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	**copy_env(char **envp)
 	env = malloc(sizeof(char *) * (count + 1));
     while(i < count)
 	{
-		env[i] = strdup(envp[i]);			//use my own
+		env[i] = ft_strdup(envp[i]);
 		i++;
 	}
     env[i] = NULL;
@@ -33,10 +33,12 @@ char	**copy_env(char **envp)
 }
 
 
-int	my_env(int argc, char **argv, char **my_env)
+int	my_env(int argc, char **argv, char ***my_env)
 {
 	int	i;
 
+	char **envp = *my_env;
+	(void)argv;
 	i = 0;
     if (argc > 1)
 	{
@@ -44,9 +46,9 @@ int	my_env(int argc, char **argv, char **my_env)
         return (1);
     }
 
-    while (my_env[i])
+    while (envp[i])
     {
-		printf("%s\n", my_env[i]);
+		printf("%s\n", envp[i]);
 		i++;
 	}
     return (0);

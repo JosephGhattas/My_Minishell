@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 12:29:25 by jghattas          #+#    #+#             */
-/*   Updated: 2025/05/08 12:21:01 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/05/08 13:18:51 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	is_numeric(const char *s)
 		i++;
     while (s[i])
 	{
-        if (!isdigit(s[i]))
+        if (!ft_isdigit(s[i]))
 			return (0);
         i++;
     }

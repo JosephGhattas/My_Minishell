@@ -1,11 +1,20 @@
 NAME = minishell
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -I.
+CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR)
 
-
+LIBFT_DIR =		srcs/utils/nolibft
+LIBFT =			$(LIBFT_DIR)/libft.a
 SRC = minishell.c
-SRCS = srcs/builtin.c srcs/builtins/cd.c srcs/builtins/env.c srcs/execute.c srcs/builtins/exit.c srcs/builtins/export.c srcs/builtins/pwd_echo.c srcs/builtins/unset.c
+SRCS = srcs/builtin.c \
+		srcs/builtins/cd.c \
+		srcs/builtins/env.c \
+		srcs/builtins/exit.c \
+		srcs/builtins/export.c \
+		srcs/builtins/pwd_echo.c \
+		srcs/builtins/unset.c \
+		srcs/execute.c \
+		srcs/banner.c
 
 OBJ = $(SRC:.c=.o) $(SRCS:.c=.o)
 %.o: %.c minishell.h
@@ -16,14 +25,19 @@ OBJ = $(SRC:.c=.o) $(SRCS:.c=.o)
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
+$(NAME): $(OBJ) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT)
+
+$(LIBFT):
+				@make --no-print-directory -C $(LIBFT_DIR)
 
 clean:
 	rm -f $(OBJ)
+	@make --no-print-directory clean -C $(LIBFT_DIR)
 
 fclean: clean
 	rm -f $(NAME)
+	@make --no-print-directory fclean -C $(LIBFT_DIR)
 
 re: fclean all
 

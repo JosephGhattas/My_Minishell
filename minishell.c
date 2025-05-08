@@ -4,18 +4,20 @@ int	main(int argc, char **argv, char **envp)
 {
 	char	**my_env;
 
-	my_env = copy_env(envp);
+    my_env = copy_env(envp);
     (void)argc;
-	(void)argv;
-	(void)my_env;
+    (void)argv;
+
     printbanner();
-    //temporary parsing
-	t_command	cmd1 =
-    {
-        .argv = (char *[]){"env", NULL, NULL},
+
+    // Simulated parsed command: env
+    t_command cmd1 = {
+        .argv = (char *[]){"env", NULL},
+        .argc = 1,
         .infile = NULL,
-        .outfile = "out.txt",
+        .outfile = NULL,
         .append = 0,
+        .envp = my_env,
         .next = NULL
     };
 
@@ -26,5 +28,8 @@ int	main(int argc, char **argv, char **envp)
     */
 
     execute_command(&cmd1);
+	for (int i = 0; my_env[i]; i++)
+		free(my_env[i]);
+	free(my_env);
     return (0);
 }

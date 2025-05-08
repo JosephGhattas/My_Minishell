@@ -1,6 +1,15 @@
 #include <string.h> //replace strcmp with my own
 #include "minishell.h"
 
+int		my_cd(int argc, char **argv);
+int		my_pwd(void);
+int		my_echo(int argc, char**argv);
+char	**copy_env(char **envp);
+int		my_env(int argc, char **argv, char ***my_env);
+int		my_export(int argc, char **argv, char ***envp);
+int		my_unset(int argc, char **argv, char ***envp);
+int		my_exit(int argc, char **argv);
+
 int	is_builtin(const char *cmd)
 {
     if (!cmd)
@@ -14,7 +23,7 @@ int	is_builtin(const char *cmd)
             !strcmp(cmd, "exit"));
 }
 
-int run_builtin(int argc, char **argv, char **envp)
+int run_builtin(int argc, char **argv, char ***envp)
 {
     if (!argv || !argv[0])
         return (1);
