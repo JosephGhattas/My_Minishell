@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	is_builtin(const char *cmd)
+int	is_builtin( char *cmd)
 {
 	if (!cmd)
 		return (0);

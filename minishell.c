@@ -19,27 +19,34 @@ int	main(int argc, char **argv, char **envp)
     my_env = copy_env(envp);
     (void)argc;
     (void)argv;
-    printbanner();
-    // Simulated parsed command: env
-    t_command cmd1 = {
-        .argv = (char *[]){"env", NULL},
-        .argc = 1,
-        .infile = NULL,
-        .outfile = NULL,
-        .append = 0,
-        .envp = my_env,
-        .next = NULL
-    };
+    while (1)
+    {
+        printbanner();
+	    char *input = readline("minishell$ ");
+	    t_command *cmd = parse_input(input, my_env); // <-- your parser returns this
+	    execute_command(cmd);
+	    free_command(cmd);
+        free_env(my_env);
+	    free(input);
+    }
 
+    // Simulated parsed command: env
+    // t_command cmd1 = {
+    //     .argv = (char *[]){"env", NULL},
+    //     .argc = 1,
+    //     .infile = NULL,
+    //     .outfile = NULL,
+    //     .append = 0,
+    //     .envp = my_env,
+    //     .next = NULL
+    // };
     /*// Simulate: cat < input.txt | grep hello | wc -l > out.txt
     t_command c1 = { .argv = (char *[]){"cat", NULL}, .infile = "input.txt", .next = &c2 };
     t_command c2 = { .argv = (char *[]){"grep", "hello", NULL}, .next = &c3 };
     t_command c3 = { .argv = (char *[]){"wc", "-l", NULL}, .outfile = "out.txt", .append = 0 };
     */
 
-    execute_command(&cmd1);
-	for (int i = 0; my_env[i]; i++)
-		free(my_env[i]);
-	free(my_env);
+    // execute_command(&cmd1);
+	
     return (0);
 }

@@ -104,13 +104,18 @@ int	execute_command(t_command *cmd)
 
 	if (!cmd || !cmd->argv || !cmd->argv[0])
 		return (1);
+	if (cmd->next)
+		return (execute_pipeline(cmd));
 	if (is_builtin(cmd->argv[0]))
 		return (run_builtin(cmd->argc, cmd->argv, &cmd->envp));
 	pid = fork();
 	if (pid == 0)
 	{
+		if (cmd->heredoc_delim)
+			setup_heredoc(cmd);
 		redirect_io(cmd);
 		path = find_path(cmd->argv[0], cmd->envp);
+		setup_signals_exec();
 		execve(path, cmd->argv, cmd->envp);
 		free(path);
 		perror("execve");

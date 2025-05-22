@@ -9,7 +9,8 @@
 # include <sys/wait.h>
 # include <string.h>
 # include <fcntl.h>
-
+#include <signal.h>
+#include <readline/readline.h>
 
 
 # define PATH_MAX 2000
@@ -21,14 +22,23 @@ typedef struct	s_command
     char	*outfile;
     int		append;
 	char	**envp;
+	char	*heredoc_delim;
     struct s_command	*next;
 }	t_command;
 
 //execute
-int		is_builtin(const char *cmd);
+int		is_builtin(char *cmd);
 int		run_builtin(int argc, char **argv, char ***envp);
 int		execute_command(t_command *cmd);
 char	*find_path(char *cmd, char **envp);
+int		execute_pipeline(t_command *cmd);
+int		setup_heredoc(t_command *cmd);
+
+//signals
+void	sig_handler_prompt(int sig);
+void	sig_handler_exec(int sig);
+void	setup_signals_prompt(void);
+void	setup_signals_exec(void);
 
 //builtin
 int		my_cd(int argc, char **argv);
@@ -42,6 +52,8 @@ int		my_exit(int argc, char **argv);
 
 //cleanup
 void	free_array(char **arr);
+void	free_command(t_command *cmd);
+void	free_env(char **env);
 //rnd
 void	printbanner(void);
 

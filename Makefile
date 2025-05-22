@@ -5,7 +5,7 @@ CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR)
 
 LIBFT_DIR =		srcs/utils/nolibft
 LIBFT =			$(LIBFT_DIR)/libft.a
-SRC = minishell.c
+SRC = test_builtin.c
 SRCS = srcs/builtin.c \
 		srcs/builtins/cd.c \
 		srcs/builtins/env.c \
@@ -14,9 +14,13 @@ SRCS = srcs/builtin.c \
 		srcs/builtins/pwd_echo.c \
 		srcs/builtins/unset.c \
 		srcs/execute.c \
-		srcs/banner.c
+		srcs/banner.c \
+		srcs/free.c \
+		srcs/heredoc.c \
+		srcs/pipes.c \
+		srcs/signals.c
 
-OBJ = $(SRC:.c=.o) $(SRCS:.c=.o)
+OBJ = $(SRCS:.c=.o) $(SRC:.c=.o)
 %.o: %.c minishell.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -26,7 +30,7 @@ OBJ = $(SRC:.c=.o) $(SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) -lreadline
 
 $(LIBFT):
 				@make --no-print-directory -C $(LIBFT_DIR)
