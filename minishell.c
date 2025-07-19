@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 14:24:15 by jghattas          #+#    #+#             */
-/*   Updated: 2025/07/01 15:42:23 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/07/19 16:03:36 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,3 +50,17 @@ int	main(int argc, char **argv, char **envp)
 	
     return (0);
 }
+
+
+
+/*
+parsing plan:
+detect imp content(pipes, quotes, double quotes, heredoc, redirect
+	Handle environment variables ($ followed by a sequence of characters) which
+	should expand to their values.
+	• Handle $? which should expand to the exit status of the most recently executed
+	foreground pipeline.
+	&& history )
+rank in a tree by priority
+execute them 
+*/
