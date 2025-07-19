@@ -5,7 +5,7 @@ CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR)
 
 LIBFT_DIR =		srcs/utils/nolibft
 LIBFT =			$(LIBFT_DIR)/libft.a
-SRC = test_builtin.c
+SRC = minishell.c
 SRCS = srcs/builtin.c \
 		srcs/builtins/cd.c \
 		srcs/builtins/env.c \
@@ -22,25 +22,26 @@ SRCS = srcs/builtin.c \
 
 OBJ = $(SRCS:.c=.o) $(SRC:.c=.o)
 %.o: %.c minishell.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 %.o: srcs/%.c minishell.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) -lreadline
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) -lreadline
+	@echo "✅ $(NAME) compiled successfully."
 
 $(LIBFT):
-				@make --no-print-directory -C $(LIBFT_DIR)
+	@make --no-print-directory -C $(LIBFT_DIR)
 
 clean:
-	rm -f $(OBJ)
+	@rm -f $(OBJ)
 	@make --no-print-directory clean -C $(LIBFT_DIR)
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 	@make --no-print-directory fclean -C $(LIBFT_DIR)
 
 re: fclean all
