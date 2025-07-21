@@ -26,6 +26,18 @@ typedef struct	s_command
     struct s_command	*next;
 }	t_command;
 
+typedef struct s_tree
+{
+	char 	**components;
+	char	*pipe;
+	int		redirection;
+	int		heredoc;
+	int		comment;
+
+}	t_tree;
+
+//parse
+
 //execute
 int		is_builtin(char *cmd);
 int		run_builtin(int argc, char **argv, char ***envp);

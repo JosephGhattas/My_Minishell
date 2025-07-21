@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 14:24:15 by jghattas          #+#    #+#             */
-/*   Updated: 2025/07/19 16:03:36 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/07/21 11:36:32 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,24 @@
 int	main(int argc, char **argv, char **envp)
 {
 	char	**my_env;
+	char	**tokens;
 
     my_env = copy_env(envp);
     (void)argc;
     (void)argv;
+	printbanner();
     while (1)
     {
-        printbanner();
+        
 	    char *input = readline("minishell$ ");
-	    t_command *cmd = parse_input(input, my_env); // <-- your parser returns this
-	    execute_command(cmd);
-	    free_command(cmd);
-        free_env(my_env);
+		tokens = parse_input(input, my_env);
+	    // t_command *cmd = parse_input(input, my_env); // <-- your parser returns this
+	    // execute_command(cmd);
+	    // free_command(cmd);
+		printf("%s\n", input);
 	    free(input);
     }
+	free_env(my_env);
 
     // Simulated parsed command: env
     // t_command cmd1 = {

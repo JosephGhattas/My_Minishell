@@ -6,11 +6,11 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 14:23:34 by jghattas          #+#    #+#             */
-/*   Updated: 2025/05/08 14:37:39 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/07/21 11:22:58 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../minishell.h"
 
 int	is_builtin( char *cmd)
 {

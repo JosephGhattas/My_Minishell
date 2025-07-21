@@ -6,7 +6,7 @@ CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR)
 LIBFT_DIR =		srcs/utils/nolibft
 LIBFT =			$(LIBFT_DIR)/libft.a
 SRC = minishell.c
-SRCS = srcs/builtin.c \
+SRCS = srcs/execute/builtin.c \
 		srcs/builtins/cd.c \
 		srcs/builtins/env.c \
 		srcs/builtins/exit.c \
@@ -16,9 +16,10 @@ SRCS = srcs/builtin.c \
 		srcs/execute.c \
 		srcs/banner.c \
 		srcs/free.c \
-		srcs/heredoc.c \
-		srcs/pipes.c \
-		srcs/signals.c
+		srcs/execute/heredoc.c \
+		srcs/execute/pipes.c \
+		srcs/execute/signals.c \
+		srcs/parse/parsing.c 
 
 OBJ = $(SRCS:.c=.o) $(SRC:.c=.o)
 %.o: %.c minishell.h
