@@ -11,6 +11,7 @@
 # include <fcntl.h>
 #include <signal.h>
 #include <readline/readline.h>
+#include <readline/history.h>
 
 
 # define PATH_MAX 2000
@@ -26,17 +27,39 @@ typedef struct	s_command
     struct s_command	*next;
 }	t_command;
 
-typedef struct s_tree
+typedef enum
 {
-	char 	**components;
-	char	*pipe;
-	int		redirection;
-	int		heredoc;
-	int		comment;
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_REDIR_IN,     // <
+	TOKEN_REDIR_OUT,    // >
+	TOKEN_REDIR_APPEND, // >>
+	TOKEN_HEREDOC,      // <<
+	TOKEN_EOF
+}	t_token_type;
 
-}	t_tree;
+typedef struct	s_token
+{
+	t_token_type	type;
+	char			*value;
+	struct s_token	*next;
+}	t_token;
+
 
 //parse
+t_token	*parse_input(char *input, char **my_env);
+t_token *tokenize_input(const char *line);
+t_token	*new_token(t_token_type type, char *value);
+void	add_token(t_token **head, t_token *new_tok);
+void	print_tokens(t_token *token);
+
+//help parse
+int	ft_isspace(char c);
+int	is_metachar(char c);
+char *ft_char_to_str(char c);
+char *ft_strjoin_free(char *s1, char *s2);
+void	read_operator(const char *line, size_t *i, t_token **tokens);
+void	read_word(const char *line, size_t *i, t_token **tokens);
 
 //execute
 int		is_builtin(char *cmd);

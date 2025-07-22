@@ -15,7 +15,7 @@
 int	main(int argc, char **argv, char **envp)
 {
 	char	**my_env;
-	char	**tokens;
+    char    *input;
 
     my_env = copy_env(envp);
     (void)argc;
@@ -24,12 +24,17 @@ int	main(int argc, char **argv, char **envp)
     while (1)
     {
         
-	    char *input = readline("minishell$ ");
-		tokens = parse_input(input, my_env);
+	    input = readline("minishell$ ");
+		if (!input)
+			break ;
+		if (*input)
+			add_history(input);
+		printf("input: %s\n", input);
+		parse_input(input, my_env);
 	    // t_command *cmd = parse_input(input, my_env); // <-- your parser returns this
 	    // execute_command(cmd);
 	    // free_command(cmd);
-		printf("%s\n", input);
+		
 	    free(input);
     }
 	free_env(my_env);

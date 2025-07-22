@@ -19,7 +19,9 @@ SRCS = srcs/execute/builtin.c \
 		srcs/execute/heredoc.c \
 		srcs/execute/pipes.c \
 		srcs/execute/signals.c \
-		srcs/parse/parsing.c 
+		srcs/parse/parsing.c \
+		srcs/parse/help.c \
+		srcs/parse/token.c
 
 OBJ = $(SRCS:.c=.o) $(SRC:.c=.o)
 %.o: %.c minishell.h
