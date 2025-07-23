@@ -13,12 +13,12 @@
 #include "../../minishell.h"
 
 
-t_token	*parse_input(char *input, char **my_env)
+t_command	*parse_input(char *input, char **my_env)
 {
 	t_token	*tokens;
 
 	(void)my_env;
 	tokens = tokenize_input(input);
-	print_tokens(tokens);
+	// print_tokens(tokens);
 	return (tokens);
 }

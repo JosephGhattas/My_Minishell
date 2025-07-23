@@ -32,7 +32,20 @@ int	setup_heredoc(t_command *cmd)
 	}
 	free(line);
 	close(pipefd[1]);
-	dup2(pipefd[0], 0);
-	close(pipefd[0]);
+	cmd->heredoc_fd = pipefd[0];
+	return (0);
+}
+
+int	handle_all_heredocs(t_command *cmd)
+{
+	while (cmd)
+	{
+		if (cmd->heredoc_delim)
+		{
+			if (setup_heredoc(cmd) != 0)
+				return (1);
+		}
+		cmd = cmd->next;
+	}
 	return (0);
 }

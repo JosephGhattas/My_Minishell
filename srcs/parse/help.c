@@ -22,22 +22,32 @@ int	is_metachar(char c)
 	return (c == '|' || c == '<' || c == '>' || c == '\0');
 }
 
-	char *ft_char_to_str(char c)
+char *ft_char_to_str(char c)
 {
 	char *str = malloc(2);
-	if (!str) return NULL;
+	if (!str)
+		return (NULL); // Defensive
 	str[0] = c;
 	str[1] = '\0';
-	return str;
+	return (str);
 }
 
 char *ft_strjoin_free(char *s1, char *s2)
 {
-	char *res = ft_strjoin(s1, s2); // from libft
+	char *res;
+
+	if (!s1 && !s2)
+		return (NULL);
+	else if (!s1)
+		return (s2);
+	else if (!s2)
+		return (s1);
+	res = ft_strjoin(s1, s2);
 	free(s1);
 	free(s2);
-	return res;
+	return (res);
 }
+
 
 void	read_operator(const char *line, size_t *i, t_token **tokens)
 {

@@ -14,8 +14,9 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	**my_env;
-    char    *input;
+	char	    **my_env;
+    char        *input;
+    t_command   *cmd;
 
     my_env = copy_env(envp);
     (void)argc;
@@ -30,11 +31,21 @@ int	main(int argc, char **argv, char **envp)
 		if (*input)
 			add_history(input);
 		printf("input: %s\n", input);
-		parse_input(input, my_env);
-	    // t_command *cmd = parse_input(input, my_env); // <-- your parser returns this
-	    // execute_command(cmd);
-	    // free_command(cmd);
-		
+		//parse_input(input, my_env);
+	    cmd = parse_input(input, my_env);
+        if (!cmd)
+        {
+            free(input);
+            continue ;
+        }
+        if (handle_all_heredocs(cmd) != 0)
+        {
+            free_command(cmd);
+            free(input);
+            break ;
+        }
+	    execute_command(cmd);
+	    free_command(cmd);
 	    free(input);
     }
 	free_env(my_env);

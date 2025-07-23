@@ -24,6 +24,8 @@ typedef struct	s_command
     int		append;
 	char	**envp;
 	char	*heredoc_delim;
+	int		heredoc_fd;
+	int		heredoc_expand;
     struct s_command	*next;
 }	t_command;
 
@@ -47,11 +49,11 @@ typedef struct	s_token
 
 
 //parse
-t_token	*parse_input(char *input, char **my_env);
-t_token *tokenize_input(const char *line);
-t_token	*new_token(t_token_type type, char *value);
-void	add_token(t_token **head, t_token *new_tok);
-void	print_tokens(t_token *token);
+t_command	*parse_input(char *input, char **my_env);
+t_token		*tokenize_input(const char *line);
+t_token		*new_token(t_token_type type, char *value);
+void		add_token(t_token **head, t_token *new_tok);
+// void	print_tokens(t_token *token);
 
 //help parse
 int	ft_isspace(char c);
@@ -68,6 +70,7 @@ int		execute_command(t_command *cmd);
 char	*find_path(char *cmd, char **envp);
 int		execute_pipeline(t_command *cmd);
 int		setup_heredoc(t_command *cmd);
+int		handle_all_heredocs(t_command *cmd);
 
 //signals
 void	sig_handler_prompt(int sig);

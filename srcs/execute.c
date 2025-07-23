@@ -111,8 +111,11 @@ int	execute_command(t_command *cmd)
 	pid = fork();
 	if (pid == 0)
 	{
-		if (cmd->heredoc_delim)
-			setup_heredoc(cmd);
+		if (cmd->heredoc_fd != -1)
+		{
+			dup2(cmd->heredoc_fd, STDIN_FILENO);
+			close(cmd->heredoc_fd);
+		}
 		redirect_io(cmd);
 		path = find_path(cmd->argv[0], cmd->envp);
 		setup_signals_exec();
@@ -120,6 +123,11 @@ int	execute_command(t_command *cmd)
 		free(path);
 		perror("execve");
 		exit(1);
+	}
+	if (cmd->heredoc_fd != -1)
+	{
+		close(cmd->heredoc_fd);
+		cmd->heredoc_fd = -1;
 	}
 	waitpid(pid, &status, 0);
 	return (WEXITSTATUS(status));
