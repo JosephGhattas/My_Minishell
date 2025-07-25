@@ -9,12 +9,29 @@
 # include <sys/wait.h>
 # include <string.h>
 # include <fcntl.h>
-#include <signal.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+# include <signal.h>
+# include <limits.h>
+# include <stdbool.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
+// # define PATH_MAX 2000
 
-# define PATH_MAX 2000
+extern volatile sig_atomic_t g_sig;
+
+typedef struct s_env_list
+{
+    char              *name;              // value
+    char              *type;              // key
+    bool              equal;              // true if '=' exists in original string
+    char              *heredoc_filename;  // for heredoc temp file
+	int               exit_status;        // exit status of the last command
+    char              *shell_pwd;      	// shell's PWD
+    char              *shell_oldpwd;   // shell's OLDPWD
+    struct s_env_list *next;
+    struct s_env_list *prev;
+}                 t_env_list;
+
 typedef struct	s_command
 {
     int		argc;
@@ -48,52 +65,68 @@ typedef struct	s_token
 }	t_token;
 
 
+//signals
+void		sig_handler_prompt(int sig);
+void		sig_handler_exec(int sig);
+void		setup_signals_prompt(void);
+void		setup_signals_exec(void);
+
+//env_list
+void		init(int argc, char **argv, t_env_list **env_list, char **env);
+void		cheaking_env(t_env_list **env_list, char **env);
+void		memory_error(void);
+void		check_shell_number(int *shell_number);
+void		new_node_filling(t_env_list **new_node, t_env_list **head);
+t_env_list	*add_shell_level(t_env_list *env_list);
+char		*extract_value_part(char *env);
+char		*extract_key_part(char *env_var);
+bool		equal(char *env);
+t_env_list	*create_env_node(char *env);
+void		append_env_node(t_env_list **current, t_env_list **new_node);
+t_env_list	*add_shell_level(t_env_list *env_list);
+t_env_list	*generate_env_list(char **env);
+t_env_list	*create_default_env(void);
+
 //parse
-t_command	*parse_input(char *input, char **my_env);
+t_token		*parse_input(char *input, t_env_list *my_env);
 t_token		*tokenize_input(const char *line);
 t_token		*new_token(t_token_type type, char *value);
 void		add_token(t_token **head, t_token *new_tok);
-// void	print_tokens(t_token *token);
+void		print_tokens(t_token *token);
 
 //help parse
-int	ft_isspace(char c);
-int	is_metachar(char c);
-char *ft_char_to_str(char c);
-char *ft_strjoin_free(char *s1, char *s2);
-void	read_operator(const char *line, size_t *i, t_token **tokens);
-void	read_word(const char *line, size_t *i, t_token **tokens);
+int			ft_isspace(char c);
+int			is_metachar(char c);
+char 		*ft_char_to_str(char c);
+char 		*ft_strjoin_free(char *s1, char *s2);
+void		read_operator(const char *line, size_t *i, t_token **tokens);
+void		read_word(const char *line, size_t *i, t_token **tokens);
 
 //execute
-int		is_builtin(char *cmd);
-int		run_builtin(int argc, char **argv, char ***envp);
-int		execute_command(t_command *cmd);
-char	*find_path(char *cmd, char **envp);
-int		execute_pipeline(t_command *cmd);
-int		setup_heredoc(t_command *cmd);
-int		handle_all_heredocs(t_command *cmd);
-
-//signals
-void	sig_handler_prompt(int sig);
-void	sig_handler_exec(int sig);
-void	setup_signals_prompt(void);
-void	setup_signals_exec(void);
+int			is_builtin(char *cmd);
+int			run_builtin(int argc, char **argv, char ***envp);
+int			execute_command(t_command *cmd);
+char		*find_path(char *cmd, char **envp);
+int			execute_pipeline(t_command *cmd);
+int			setup_heredoc(t_command *cmd);
+int			handle_all_heredocs(t_command *cmd);
 
 //builtin
-int		my_cd(int argc, char **argv);
-int		my_pwd(void);
-int		my_echo(int argc, char**argv);
-char	**copy_env(char **envp);
-int		my_env(int argc, char **argv, char ***my_env);
-int		my_export(int argc, char **argv, char ***envp);
-int		my_unset(int argc, char **argv, char ***envp);
-int		my_exit(int argc, char **argv);
+int			my_cd(int argc, char **argv);
+int			my_pwd(void);
+int			my_echo(int argc, char**argv);
+char		**copy_env(char **envp);
+int			my_env(int argc, char **argv, char ***my_env);
+int			my_export(int argc, char **argv, char ***envp);
+int			my_unset(int argc, char **argv, char ***envp);
+int			my_exit(int argc, char **argv);
 
 //cleanup
-void	free_array(char **arr);
-void	free_command(t_command *cmd);
-void	free_env(char **env);
+void		free_array(char **arr);
+void		free_command(t_command *cmd);
+void 		free_env_list_full(t_env_list *env);
 //rnd
-void	printbanner(void);
+void		printbanner(void);
 
 //ansi colors
 //============================================

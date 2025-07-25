@@ -14,11 +14,11 @@
 
 t_token	*new_token(t_token_type type, char *value)
 {
-	t_token *tok;
+	t_token	*tok;
 
 	tok = malloc(sizeof(t_token));
 	if (!tok)
-		return NULL;
+		return (NULL);
 	tok->type = type;
 	tok->value = value;
 	tok->next = NULL;
@@ -44,10 +44,9 @@ t_token	*tokenize_input(const char *line)
 {
 	t_token	*tokens;
 	size_t	i;
-	
+
 	tokens = NULL;
 	i = 0;
-
 	while (line[i])
 	{
 		if (ft_isspace(line[i]))
@@ -60,13 +59,13 @@ t_token	*tokenize_input(const char *line)
 	return (tokens);
 }
 
-// void	print_tokens(t_token *token)
-// {
-// 	while (token)
-// 	{
-// 		printf("TOKEN(%d): [%s]\n", token->type, token->value);
-// 		token = token->next;
-// 	}
-// }
+void	print_tokens(t_token *token)
+{
+	while (token)
+	{
+		printf("TOKEN(%d): [%s]\n", token->type, token->value);
+		token = token->next;
+	}
+}
 
 //remember to test what happens wiht #

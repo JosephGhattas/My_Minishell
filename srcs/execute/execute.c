@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../..//minishell.h"
 
 void	free_array(char **arr)
 {
@@ -108,6 +108,7 @@ int	execute_command(t_command *cmd)
 		return (execute_pipeline(cmd));
 	if (is_builtin(cmd->argv[0]))
 		return (run_builtin(cmd->argc, cmd->argv, &cmd->envp));
+	setup_signals_exec();
 	pid = fork();
 	if (pid == 0)
 	{

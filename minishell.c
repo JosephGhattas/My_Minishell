@@ -12,75 +12,61 @@
 
 #include "minishell.h"
 
-int	main(int argc, char **argv, char **envp)
+
+void	init(int argc, char **argv, t_env_list **env_list, char **env)
 {
-	char	    **my_env;
-    char        *input;
-    t_command   *cmd;
-
-    my_env = copy_env(envp);
-    (void)argc;
-    (void)argv;
-	printbanner();
-    while (1)
-    {
-        
-	    input = readline("minishell$ ");
-		if (!input)
-			break ;
-		if (*input)
-			add_history(input);
-		printf("input: %s\n", input);
-		//parse_input(input, my_env);
-	    cmd = parse_input(input, my_env);
-        if (!cmd)
-        {
-            free(input);
-            continue ;
-        }
-        if (handle_all_heredocs(cmd) != 0)
-        {
-            free_command(cmd);
-            free(input);
-            break ;
-        }
-	    execute_command(cmd);
-	    free_command(cmd);
-	    free(input);
-    }
-	free_env(my_env);
-
-    // Simulated parsed command: env
-    // t_command cmd1 = {
-    //     .argv = (char *[]){"env", NULL},
-    //     .argc = 1,
-    //     .infile = NULL,
-    //     .outfile = NULL,
-    //     .append = 0,
-    //     .envp = my_env,
-    //     .next = NULL
-    // };
-    /*// Simulate: cat < input.txt | grep hello | wc -l > out.txt
-    t_command c1 = { .argv = (char *[]){"cat", NULL}, .infile = "input.txt", .next = &c2 };
-    t_command c2 = { .argv = (char *[]){"grep", "hello", NULL}, .next = &c3 };
-    t_command c3 = { .argv = (char *[]){"wc", "-l", NULL}, .outfile = "out.txt", .append = 0 };
-    */
-
-    // execute_command(&cmd1);
-	
-    return (0);
+	(void)argv;
+	if (argc > 1)
+	{
+		ft_putstr_fd("ERROR: too many arguments\n", 2);
+		exit(127);
+	}
+	cheaking_env(&(*env_list), env);
 }
 
+int	main(int argc, char **argv, char **envp)
+{
+	t_env_list *env;
+    char        *input;
+    // t_command   *cmd;
 
-
-/*
-parsing plan:
-detect imp content(pipes, quotes, double quotes, heredoc, redirect
-	Handle environment variables ($ followed by a sequence of characters) which
-	should expand to their values.
-	• Handle $? which should expand to the exit status of the most recently executed
-	foreground pipeline.
-	&& history )
-rank in a tree by priority
-execute them 
-*/
+	printbanner();
+    init(argc, argv, &env, envp);
+    while (1)
+    {
+        setup_signals_prompt();
+	    input = readline("CJminishell$ ");
+		if (!input)
+		{
+            free(input);
+			free_env_list_full(env);
+			exit(EXIT_FAILURE);
+		}
+		if (*input)
+			add_history(input);
+		parse_input(input, env);
+	    // cmd = parse_input(input, my_env);
+        // if (!cmd)
+        // {
+        //     free(input);
+        //     break ;
+        // }
+        
+        // if (handle_all_heredocs(cmd) != 0)
+        // {
+        //     free_command(cmd);
+        //     free(input);
+        //     break ;
+        // }
+	    // execute_command(cmd);
+	    // free_command(cmd);
+	    free(input);
+        if (g_sig != 0)
+		{
+			env->exit_status = 128 + g_sig;
+			g_sig = 0;
+		}
+    }
+	free_env_list_full(env);
+    return (0);
+}

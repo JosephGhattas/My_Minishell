@@ -6,22 +6,27 @@ CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR)
 LIBFT_DIR =		srcs/utils/nolibft
 LIBFT =			$(LIBFT_DIR)/libft.a
 SRC = minishell.c
-SRCS = srcs/execute/builtin.c \
+SRCS = srcs/env_var/env_list.c \
+		srcs/env_var/env_list2.c \
+		srcs/env_var/env_list3.c \
+		srcs/parse/parsing.c \
+		srcs/parse/help.c \
+		srcs/parse/token.c \
+		srcs/execute/builtin.c \
+		srcs/execute/heredoc.c \
+		srcs/execute/pipes.c \
+		srcs/execute/execute.c \
 		srcs/builtins/cd.c \
 		srcs/builtins/env.c \
 		srcs/builtins/exit.c \
 		srcs/builtins/export.c \
 		srcs/builtins/pwd_echo.c \
 		srcs/builtins/unset.c \
-		srcs/execute.c \
+		srcs/utils/utils.c \
 		srcs/banner.c \
 		srcs/free.c \
-		srcs/execute/heredoc.c \
-		srcs/execute/pipes.c \
-		srcs/execute/signals.c \
-		srcs/parse/parsing.c \
-		srcs/parse/help.c \
-		srcs/parse/token.c
+		srcs/signals.c
+		 
 
 OBJ = $(SRCS:.c=.o) $(SRC:.c=.o)
 %.o: %.c minishell.h

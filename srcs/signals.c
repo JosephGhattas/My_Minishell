@@ -10,17 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "../minishell.h"
 #include <signal.h>
 #include <readline/readline.h>
 
-volatile sig_atomic_t g_sig = 0;
+volatile sig_atomic_t	g_sig = 0;
 
 void	sig_handler_prompt(int sig)
 {
 	if (sig == SIGINT)
 	{
-		g_sig = 130;
+		g_sig = SIGINT;
 		write(1, "\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
@@ -28,7 +28,6 @@ void	sig_handler_prompt(int sig)
 	}
 	else if (sig == SIGQUIT)
 	{
-		write(1, "\b\b  \b\b", 6);
 	}
 }
 
@@ -36,7 +35,7 @@ void	sig_handler_exec(int sig)
 {
 	if (sig == SIGINT || sig == SIGQUIT)
 	{
-		g_sig = 128 + sig;
+		g_sig = 128;
 		write(1, "\n", 1);
 	}
 }
