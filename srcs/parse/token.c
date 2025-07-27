@@ -61,13 +61,14 @@ t_token	*tokenize_input(const char *line)
 	return (tokens);
 }
 
-// void	print_tokens(t_token *token)
-// {
-// 	while (token)
-// 	{
-// 		printf("TOKEN(%d): [%s]\n", token->type, token->value);
-// 		token = token->next;
-// 	}
-// }
+void	print_tokens(t_token *token)
+{
+	while (token)
+	{
+		printf("TOKEN(%d): [%s]\n", token->type, token->value);
+		token = token->next;
+	}
+	printf("\n\n\n");
+}
 
 //remember to test what happens wiht #

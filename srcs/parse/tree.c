@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 00:03:31 by jgh               #+#    #+#             */
-/*   Updated: 2025/07/27 02:27:04 by jgh              ###   ########.fr       */
+/*   Updated: 2025/07/27 22:58:24 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,39 +14,45 @@
 
 static void free_args(char **args, int count)
 {
-	while (--count >= 0)
-		free(args[count]);
-	free(args);
+    int i;
+
+    i = 0;
+    while (i < count)
+    {
+        free(args[i]);
+        i++;
+    }
+    free(args);
 }
 
 char **collect_args(t_token *start, t_token *end, int *argc)
 {
 	char    **args;
 	t_token *cur;
+	int		i;
 
     if (!start || !end || !argc)
-    {
-        return (NULL);
-    }
+		return (NULL);
     *argc = count_args(start, end);
-    if (*argc < 0){
-        return (NULL);}
+    if (*argc < 0)
+		return (NULL);
 	args = malloc(sizeof(char *) * (*argc + 1));
 	if (!args)
 		return (NULL);
 	cur = start;
-	*argc = 0;
+	i = 0;
 	while (cur && cur != end->next)
 	{
 		if (cur->type == TOKEN_WORD)
 		{
-            args[*argc] = ft_strdup(cur->value);
-            if (!args[*argc])
-                return(free_args(args, (*argc)), NULL);
+            args[i] = ft_strdup(cur->value);
+            if (!args[i])
+                return(free_args(args, i), NULL);
+			i++;
         }
 		cur = cur->next;
     }
-	args[*argc] = NULL;
+	args[i] = NULL;
 	return (args);
 }
 

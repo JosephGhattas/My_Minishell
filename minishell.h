@@ -127,7 +127,7 @@ t_env_list	*create_default_env(void);
 t_token		*tokenize_input(const char *line);
 t_token		*new_token(t_token_type type, char *value);
 void		add_token(t_token **head, t_token *new_tok);
-// void		print_tokens(t_token *token);
+void		print_tokens(t_token *token);
 void	print_ast(t_ast_node *node, int depth);
 
 //help tokenization
@@ -143,7 +143,7 @@ t_ast_node	*parse_input(char *input, t_env_list *my_env);
 t_ast_node	*parse_simple_command(t_token *start, t_token *end);
 t_token		*find_last_token(t_token    *token);
 t_token 	*find_first_token(t_token    *token);
-t_token		*find_last_token_of_type(t_token *tail, t_token_type type);
+t_token		*find_last_token_of_type(t_token *start, t_token *end, t_token_type type);
 t_ast_node	*pipe_node(t_token *start, t_token *end, t_token *pipe_tok);
 t_ast_node	*parse_tokens(t_token *start, t_token *end);
 t_redir		*new_redir(t_token *token, t_token *next);

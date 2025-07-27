@@ -63,7 +63,7 @@ t_ast_node	*parse_tokens(t_token *start, t_token *end)
 	if (start == end && start->type != TOKEN_PIPE)
 		return (parse_simple_command(start, end));
 
-	pipe_tok = find_last_token_of_type(end, TOKEN_PIPE);
+	pipe_tok = find_last_token_of_type(start, end, TOKEN_PIPE);
 	if (pipe_tok)
 	{
 		// Prevent malformed left/right splits
@@ -83,7 +83,7 @@ t_ast_node	*parse_input(char *input, t_env_list *my_env)
 	(void)my_env;
 	token = tokenize_input(input);
 	tree = parse_tokens(find_first_token(token), find_last_token(token));
-	// print_tokens(tokens);
+	print_tokens(token);
 	print_ast(tree, 0);
 	return (tree);
 }
