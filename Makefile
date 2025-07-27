@@ -12,6 +12,8 @@ SRCS = srcs/env_var/env_list.c \
 		srcs/parse/parsing.c \
 		srcs/parse/help.c \
 		srcs/parse/token.c \
+		srcs/parse/tree.c \
+		srcs/parse/tree_help.c \
 		srcs/execute/builtin.c \
 		srcs/execute/heredoc.c \
 		srcs/execute/pipes.c \

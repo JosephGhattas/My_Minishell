@@ -22,6 +22,7 @@ t_token	*new_token(t_token_type type, char *value)
 	tok->type = type;
 	tok->value = value;
 	tok->next = NULL;
+	tok->prev = NULL;
 	return (tok);
 }
 
@@ -38,6 +39,7 @@ void	add_token(t_token **head, t_token *new_tok)
 	while (cur->next)
 		cur = cur->next;
 	cur->next = new_tok;
+	new_tok->prev = cur;
 }
 
 t_token	*tokenize_input(const char *line)
@@ -59,13 +61,13 @@ t_token	*tokenize_input(const char *line)
 	return (tokens);
 }
 
-void	print_tokens(t_token *token)
-{
-	while (token)
-	{
-		printf("TOKEN(%d): [%s]\n", token->type, token->value);
-		token = token->next;
-	}
-}
+// void	print_tokens(t_token *token)
+// {
+// 	while (token)
+// 	{
+// 		printf("TOKEN(%d): [%s]\n", token->type, token->value);
+// 		token = token->next;
+// 	}
+// }
 
 //remember to test what happens wiht #

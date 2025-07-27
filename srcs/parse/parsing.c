@@ -12,12 +12,78 @@
 
 #include "../../minishell.h"
 
-t_token	*parse_input(char *input, t_env_list *my_env)
+t_ast_node	*pipe_node(t_token *start, t_token *end, t_token *pipe_tok)
 {
-	t_token	*tokens;
+	t_ast_node	*node;
+
+	if (!start || !end || !pipe_tok->prev || !pipe_tok->next)
+        return (NULL);
+	node = malloc(sizeof(t_ast_node));
+	if (!node)
+		return (NULL);
+	node->type = NODE_PIPE;
+	node->args = NULL;
+	node->argc = 0;
+	node->redirections = NULL;
+	if (!pipe_tok->prev || !pipe_tok->next)
+	{
+		free(node);
+		return (NULL);
+	}
+	node->left = parse_tokens(start, pipe_tok->prev);
+	node->right = parse_tokens(pipe_tok->next, end);
+	return (node);
+}
+
+t_ast_node	*parse_simple_command(t_token *start, t_token *end)
+{
+	t_ast_node	*node;
+
+	if (!start || !end)
+        return (NULL);
+	node = malloc(sizeof(t_ast_node));
+	if (!node)
+		return (NULL);
+	node->type = NODE_COMMAND;
+	node->left = NULL;
+	node->right = NULL;
+	node->args = collect_args(start, end, &node->argc);
+	node->redirections = collect_redirections(start, end);
+	return (node);
+}
+
+t_ast_node	*parse_tokens(t_token *start, t_token *end)
+{
+	t_token	*pipe_tok;
+
+	if (!start || !end)
+		return (NULL);
+
+	// Defensive bounds check
+	if (start == end && start->type != TOKEN_PIPE)
+		return (parse_simple_command(start, end));
+
+	pipe_tok = find_last_token_of_type(end, TOKEN_PIPE);
+	if (pipe_tok)
+	{
+		// Prevent malformed left/right splits
+		if (!pipe_tok->prev || !pipe_tok->next)
+			return (NULL);
+		return (pipe_node(start, end, pipe_tok));
+	}
+	return (parse_simple_command(start, end));
+}
+
+
+t_ast_node	*parse_input(char *input, t_env_list *my_env)
+{
+	t_token		*token;
+	t_ast_node	*tree;
 
 	(void)my_env;
-	tokens = tokenize_input(input);
-	print_tokens(tokens);
-	return (tokens);
+	token = tokenize_input(input);
+	tree = parse_tokens(find_first_token(token), find_last_token(token));
+	// print_tokens(tokens);
+	print_ast(tree, 0);
+	return (tree);
 }

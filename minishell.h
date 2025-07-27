@@ -15,10 +15,11 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-// # define PATH_MAX 2000
-
+//global signals variable//
 extern volatile sig_atomic_t g_sig;
 
+
+//envp variable list//
 typedef struct s_env_list
 {
     char              *name;              // value
@@ -32,6 +33,7 @@ typedef struct s_env_list
     struct s_env_list *prev;
 }                 t_env_list;
 
+///////////////
 typedef struct	s_command
 {
     int		argc;
@@ -46,6 +48,8 @@ typedef struct	s_command
     struct s_command	*next;
 }	t_command;
 
+
+//tokens list//
 typedef enum
 {
 	TOKEN_WORD,
@@ -62,7 +66,39 @@ typedef struct	s_token
 	t_token_type	type;
 	char			*value;
 	struct s_token	*next;
+	struct s_token	*prev;
 }	t_token;
+
+
+//AST tree//
+typedef enum e_node_type
+{
+    NODE_COMMAND,
+    NODE_PIPE,
+    NODE_REDIR_IN,
+    NODE_REDIR_OUT,
+    NODE_REDIR_APPEND,
+    NODE_HEREDOC
+} t_node_type;
+
+typedef struct	s_redir
+{
+	t_token_type	type;
+	bool			is_heredoc;
+    char			*filename;
+	char			*delimiter;
+    struct s_redir	*next;
+}	t_redir;
+
+typedef struct s_ast_node
+{
+	t_node_type         type;
+	char				**args;
+	int					argc;
+	struct s_ast_node	*left;
+	struct s_ast_node	*right;
+	t_redir				*redirections;
+}	t_ast_node;
 
 
 //signals
@@ -87,20 +123,34 @@ t_env_list	*add_shell_level(t_env_list *env_list);
 t_env_list	*generate_env_list(char **env);
 t_env_list	*create_default_env(void);
 
-//parse
-t_token		*parse_input(char *input, t_env_list *my_env);
+//tokenization
 t_token		*tokenize_input(const char *line);
 t_token		*new_token(t_token_type type, char *value);
 void		add_token(t_token **head, t_token *new_tok);
-void		print_tokens(t_token *token);
+// void		print_tokens(t_token *token);
+void	print_ast(t_ast_node *node, int depth);
 
-//help parse
+//help tokenization
 int			ft_isspace(char c);
 int			is_metachar(char c);
 char 		*ft_char_to_str(char c);
 char 		*ft_strjoin_free(char *s1, char *s2);
 void		read_operator(const char *line, size_t *i, t_token **tokens);
 void		read_word(const char *line, size_t *i, t_token **tokens);
+
+//parse
+t_ast_node	*parse_input(char *input, t_env_list *my_env);
+t_ast_node	*parse_simple_command(t_token *start, t_token *end);
+t_token		*find_last_token(t_token    *token);
+t_token 	*find_first_token(t_token    *token);
+t_token		*find_last_token_of_type(t_token *tail, t_token_type type);
+t_ast_node	*pipe_node(t_token *start, t_token *end, t_token *pipe_tok);
+t_ast_node	*parse_tokens(t_token *start, t_token *end);
+t_redir		*new_redir(t_token *token, t_token *next);
+int			count_args(t_token *start, t_token *end);
+char		**collect_args(t_token *start, t_token *end, int *argc);
+t_redir		*collect_redirections(t_token *start, t_token *end);
+
 
 //execute
 int			is_builtin(char *cmd);

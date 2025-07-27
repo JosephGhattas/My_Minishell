@@ -59,3 +59,53 @@ void	free_env_list_full(t_env_list *env)
 		current = next;
 	}
 }
+
+void	free_tokens(t_token *tok)
+{
+	t_token	*tmp;
+
+	while (tok)
+	{
+		tmp = tok->next;
+		free(tok->value);
+		free(tok);
+		tok = tmp;
+	}
+}
+
+void	free_redirections(t_redir *redir)
+{
+	t_redir	*tmp;
+
+	while (redir)
+	{
+		tmp = redir->next;
+		free(redir->filename);
+		if (redir->delimiter)
+			free(redir->delimiter);
+		free(redir);
+		redir = tmp;
+	}
+}
+
+void	free_ast(t_ast_node *node)
+{
+	int	i;
+
+	if (!node)
+		return ;
+	if (node->args)
+	{
+		i = 0;
+		while (node->args[i])
+			free(node->args[i++]);
+		free(node->args);
+	}
+	if (node->redirections)
+		free_redirections(node->redirections);
+	if (node->left)
+		free_ast(node->left);
+	if (node->right)
+		free_ast(node->right);
+	free(node);
+}
