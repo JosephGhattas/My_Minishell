@@ -33,22 +33,6 @@ typedef struct s_env_list
     struct s_env_list *prev;
 }                 t_env_list;
 
-///////////////
-typedef struct	s_command
-{
-    int		argc;
-    char	**argv;
-    char	*infile;
-    char	*outfile;
-    int		append;
-	char	**envp;
-	char	*heredoc_delim;
-	int		heredoc_fd;
-	int		heredoc_expand;
-    struct s_command	*next;
-}	t_command;
-
-
 //tokens list//
 typedef enum
 {
@@ -101,6 +85,10 @@ typedef struct s_ast_node
 }	t_ast_node;
 
 
+//debug
+// void		print_tokens(t_token *token);
+// void		print_ast(t_ast_node *node, int depth);
+
 //signals
 void		sig_handler_prompt(int sig);
 void		sig_handler_exec(int sig);
@@ -127,8 +115,6 @@ t_env_list	*create_default_env(void);
 t_token		*tokenize_input(const char *line);
 t_token		*new_token(t_token_type type, char *value);
 void		add_token(t_token **head, t_token *new_tok);
-void		print_tokens(t_token *token);
-void	print_ast(t_ast_node *node, int depth);
 
 //help tokenization
 int			ft_isspace(char c);
@@ -138,28 +124,45 @@ char 		*ft_strjoin_free(char *s1, char *s2);
 void		read_operator(const char *line, size_t *i, t_token **tokens);
 void		read_word(const char *line, size_t *i, t_token **tokens);
 
-//parse
-t_ast_node	*parse_input(char *input, t_env_list *my_env);
-t_ast_node	*parse_simple_command(t_token *start, t_token *end);
+//AST Tree
 t_token		*find_last_token(t_token    *token);
 t_token 	*find_first_token(t_token    *token);
 t_token		*find_last_token_of_type(t_token *start, t_token *end, t_token_type type);
-t_ast_node	*pipe_node(t_token *start, t_token *end, t_token *pipe_tok);
-t_ast_node	*parse_tokens(t_token *start, t_token *end);
-t_redir		*new_redir(t_token *token, t_token *next);
-int			count_args(t_token *start, t_token *end);
-char		**collect_args(t_token *start, t_token *end, int *argc);
 t_redir		*collect_redirections(t_token *start, t_token *end);
+t_redir		*new_redir(t_token *token, t_token *next);
+char		**collect_args(t_token *start, t_token *end, int *argc);
+int			count_args(t_token *start, t_token *end);
 
+//parse
+t_ast_node	*parse_input(char *input, t_env_list *my_env);
+t_ast_node	*parse_simple_command(t_token *start, t_token *end);
+t_ast_node	*parse_tokens(t_token *start, t_token *end);
+t_ast_node	*pipe_node(t_token *start, t_token *end, t_token *pipe_tok);
 
 //execute
+
+int			execute_ast(t_ast_node *node, t_env_list *env);
+int			execute_pipe(t_ast_node *node, t_env_list *env);
+int			execute_command_node(t_ast_node *cmd, t_env_list *env);
 int			is_builtin(char *cmd);
 int			run_builtin(int argc, char **argv, char ***envp);
-int			execute_command(t_command *cmd);
+
+//herdocs handling
+char		*generate_heredoc_filename(void);
+int			create_heredoc_file(t_redir *redir);
+int			setup_heredocs(t_redir *list);
+int			setup_all_heredocs(t_ast_node *node);
+
+//redirections
+int			setup_redirections(t_redir *redir);
+int			open_redirection_file(t_redir *redir);
+
+//exec_env
+int			env_list_size(t_env_list *env);
+char		*join_env_entry(t_env_list *node);
+char		**env_list_to_envp(t_env_list *env);
 char		*find_path(char *cmd, char **envp);
-int			execute_pipeline(t_command *cmd);
-int			setup_heredoc(t_command *cmd);
-int			handle_all_heredocs(t_command *cmd);
+char		*my_getenv(char *name, char **envp);
 
 //builtin
 int			my_cd(int argc, char **argv);
@@ -173,8 +176,9 @@ int			my_exit(int argc, char **argv);
 
 //cleanup
 void		free_array(char **arr);
-void		free_command(t_command *cmd);
 void 		free_env_list_full(t_env_list *env);
+void	free_ast(t_ast_node *node);
+
 //rnd
 void		printbanner(void);
 

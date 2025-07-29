@@ -1,0 +1,1 @@
+-rwxrwxrwx 1 jgh jgh 0 Jul 29  2025 out.txt

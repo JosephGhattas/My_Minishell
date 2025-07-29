@@ -28,7 +28,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_env_list *env;
     char        *input;
-    // t_command   *cmd;
+    t_ast_node   *tree;
 
 	printbanner();
     init(argc, argv, &env, envp);
@@ -44,23 +44,21 @@ int	main(int argc, char **argv, char **envp)
 		}
 		if (*input)
 			add_history(input);
-		parse_input(input, env);
-	    // cmd = parse_input(input, my_env);
-        // if (!cmd)
-        // {
-        //     free(input);
-        //     break ;
-        // }
-        
-        // if (handle_all_heredocs(cmd) != 0)
-        // {
-        //     free_command(cmd);
-        //     free(input);
-        //     break ;
-        // }
-	    // execute_command(cmd);
-	    // free_command(cmd);
-	    free(input);
+		tree = parse_input(input, env);
+		free(input);
+        if (!tree)
+        {
+			free_env_list_full(env);
+            exit (EXIT_FAILURE);
+        }  
+		if (setup_all_heredocs(tree) != 0)
+		{
+			perror("Heredoc interrupted");
+			free_env_list_full(env);
+			free_ast(tree);
+			exit(EXIT_FAILURE);
+		}
+		execute_ast(tree, env);
         if (g_sig != 0)
 		{
 			env->exit_status = 128 + g_sig;
@@ -68,5 +66,6 @@ int	main(int argc, char **argv, char **envp)
 		}
     }
 	free_env_list_full(env);
+	free_ast(tree);
     return (0);
 }

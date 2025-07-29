@@ -22,7 +22,7 @@ static size_t	count_word(const char *s, char c)
 	count = 0;
 	i = 0;
 	while (*(s + i))
-	{			
+	{
 		if (*(s + i) != c)
 		{
 			count++;

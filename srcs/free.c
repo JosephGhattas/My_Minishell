@@ -12,27 +12,27 @@
 
 #include "../minishell.h"
 
-void	free_command(t_command *cmd)
-{
-	t_command	*tmp;
-	int			i;
+// void	free_command(t_command *cmd)
+// {
+// 	t_command	*tmp;
+// 	int			i;
 
-	while (cmd)
-	{
-		tmp = cmd->next;
-		if (cmd->argv)
-		{
-			i = 0;
-			while (cmd->argv[i])
-				free(cmd->argv[i++]);
-			free(cmd->argv);
-		}
-		free(cmd->infile);
-		free(cmd->outfile);
-		free(cmd);
-		cmd = tmp;
-	}
-}
+// 	while (cmd)
+// 	{
+// 		tmp = cmd->next;
+// 		if (cmd->argv)
+// 		{
+// 			i = 0;
+// 			while (cmd->argv[i])
+// 				free(cmd->argv[i++]);
+// 			free(cmd->argv);
+// 		}
+// 		free(cmd->infile);
+// 		free(cmd->outfile);
+// 		free(cmd);
+// 		cmd = tmp;
+// 	}
+// }
 
 void	free_env_list_full(t_env_list *env)
 {
@@ -108,4 +108,16 @@ void	free_ast(t_ast_node *node)
 	if (node->right)
 		free_ast(node->right);
 	free(node);
+}
+
+void	free_array(char **arr)
+{
+	int	i;
+
+	if (!arr)
+		return ;
+	i = 0;
+	while (arr[i])
+		free(arr[i++]);
+	free(arr);
 }

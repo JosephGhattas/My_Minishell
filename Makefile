@@ -15,9 +15,10 @@ SRCS = srcs/env_var/env_list.c \
 		srcs/parse/tree.c \
 		srcs/parse/tree_help.c \
 		srcs/execute/builtin.c \
-		srcs/execute/heredoc.c \
-		srcs/execute/pipes.c \
-		srcs/execute/execute.c \
+		srcs/execute/hdoc.c \
+		srcs/execute/exec_help.c \
+		srcs/execute/exec.c \
+		srcs/execute/exec_env.c \
 		srcs/builtins/cd.c \
 		srcs/builtins/env.c \
 		srcs/builtins/exit.c \

@@ -17,7 +17,7 @@ t_ast_node	*pipe_node(t_token *start, t_token *end, t_token *pipe_tok)
 	t_ast_node	*node;
 
 	if (!start || !end || !pipe_tok->prev || !pipe_tok->next)
-        return (NULL);
+		return (NULL);
 	node = malloc(sizeof(t_ast_node));
 	if (!node)
 		return (NULL);
@@ -40,7 +40,7 @@ t_ast_node	*parse_simple_command(t_token *start, t_token *end)
 	t_ast_node	*node;
 
 	if (!start || !end)
-        return (NULL);
+		return (NULL);
 	node = malloc(sizeof(t_ast_node));
 	if (!node)
 		return (NULL);
@@ -58,22 +58,17 @@ t_ast_node	*parse_tokens(t_token *start, t_token *end)
 
 	if (!start || !end)
 		return (NULL);
-
-	// Defensive bounds check
 	if (start == end && start->type != TOKEN_PIPE)
 		return (parse_simple_command(start, end));
-
 	pipe_tok = find_last_token_of_type(start, end, TOKEN_PIPE);
 	if (pipe_tok)
 	{
-		// Prevent malformed left/right splits
 		if (!pipe_tok->prev || !pipe_tok->next)
 			return (NULL);
 		return (pipe_node(start, end, pipe_tok));
 	}
 	return (parse_simple_command(start, end));
 }
-
 
 t_ast_node	*parse_input(char *input, t_env_list *my_env)
 {
@@ -83,7 +78,7 @@ t_ast_node	*parse_input(char *input, t_env_list *my_env)
 	(void)my_env;
 	token = tokenize_input(input);
 	tree = parse_tokens(find_first_token(token), find_last_token(token));
-	print_tokens(token);
-	print_ast(tree, 0);
+	// print_tokens(token);
+	// print_ast(tree, 0);
 	return (tree);
 }

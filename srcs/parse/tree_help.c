@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 12:47:49 by jgh               #+#    #+#             */
-/*   Updated: 2025/07/27 23:11:31 by jgh              ###   ########.fr       */
+/*   Updated: 2025/07/28 14:43:00 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,14 @@ t_token	*find_first_token(t_token *token)
 	return (token);
 }
 
-t_token	*find_last_token_of_type(t_token *start, t_token *end, t_token_type type)
+t_token	*find_last_token_of_type(t_token *start, t_token *end,
+	t_token_type type)
 {
 	t_token	*cur;
 
 	cur = end;
 	if (!start || !end)
-        return (NULL);
+		return (NULL);
 	while (cur && cur != start->prev)
 	{
 		if (cur->type == type)
@@ -50,7 +51,7 @@ t_redir	*new_redir(t_token *token, t_token *next)
 {
 	t_redir	*redir;
 
-	if	(!token || !next)
+	if (!token || !next)
 		return (NULL);
 	redir = malloc(sizeof(t_redir));
 	if (!redir)
