@@ -25,22 +25,23 @@ int	is_builtin( char *cmd)
 		|| !ft_strcmp(cmd, "exit"));
 }
 
-int	run_builtin(int argc, char **argv, char ***envp)
+int	run_builtin(int argc, char **argv, t_env_list *envp)
 {
+	(void)envp;
 	if (!argv || !argv[0])
 		return (1);
 	if (!ft_strcmp(argv[0], "cd"))
-		return (my_cd(argc, argv));
+		return (my_cd(argc, argv, envp));
 	else if (!ft_strcmp(argv[0], "echo"))
 		return (my_echo(argc, argv));
 	else if (!ft_strcmp(argv[0], "pwd"))
-		return (my_pwd());
-	else if (!ft_strcmp(argv[0], "export"))
-		return (my_export(argc, argv, envp));
-	else if (!ft_strcmp(argv[0], "unset"))
-		return (my_unset(argc, argv, envp));
-	else if (!ft_strcmp(argv[0], "env"))
-		return (my_env(argc, argv, envp));
+		return (my_pwd(envp));
+	// else if (!ft_strcmp(argv[0], "export"))
+	// 	return (my_export(argc, argv, envp));
+	// else if (!ft_strcmp(argv[0], "unset"))
+	// 	return (my_unset(argc, argv, envp));
+	// else if (!ft_strcmp(argv[0], "env"))
+	// 	return (my_env(argc, argv, envp));
 	else if (!ft_strcmp(argv[0], "exit"))
 	{
 		my_exit(argc, argv);

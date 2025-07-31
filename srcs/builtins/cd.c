@@ -3,61 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/27 11:39:46 by jghattas          #+#    #+#             */
-/*   Updated: 2025/05/08 13:36:28 by jghattas         ###   ########.fr       */
+/*   Created: 2025/07/31 09:17:57 by jgh               #+#    #+#             */
+/*   Updated: 2025/07/31 11:16:47 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static int	get_current_dir(char *buf, size_t size)
+int	cd_to_target(char *target)
 {
-	if (getcwd(buf, size) == NULL)
-	{
-		perror("cd");
-		return (1);
-	}
-	return (0);
-}
-
-static int	cd2(char **argv, char *oldpwd)
-{
-	if (ft_strcmp(argv[1], "-") == 0)
-	{
-		if (!oldpwd)
-		{
-			printf("cd: OLDPWD not set\n");
-			return (1);
-		}
-		if (chdir(oldpwd) == -1)
-		{
-			perror("cd");
-			return (1);
-		}
-		printf("%s\n", oldpwd);
-		return (0);
-	}
-	else
-	{
-		if (chdir(argv[1]) == -1)
-		{
-			perror("cd");
-			return (1);
-		}
-		return (0);
-	}
-}
-
-static int	cd_home(char *home)
-{
-	if (!home)
+	if (!target)
 	{
 		printf("cd: HOME not set\n");
 		return (1);
 	}
-	if (chdir(home) == -1)
+	if (chdir(target) == -1)
 	{
 		perror("cd");
 		return (1);
@@ -65,30 +27,79 @@ static int	cd_home(char *home)
 	return (0);
 }
 
-int	my_cd(int argc, char **argv)
+int	cd_to_oldpwd(t_env_list *env)
 {
-	char	oldpwd[PATH_MAX];
-	char	cwd[PATH_MAX];
-	int		ret;
+	char	*oldpwd;
 
-	ret = 0;
-	if (get_current_dir(oldpwd, sizeof(oldpwd)))
+	oldpwd = get_env_value(env, "OLDPWD");
+	if (!oldpwd)
+	{
+		printf("cd: OLDPWD not set\n");
 		return (1);
-	if (argc == 2)
-		ret = cd2(argv, oldpwd);
-	else if (argc == 1)
-		ret = cd_home(getenv("HOME"));
+	}
+	if (chdir(oldpwd) == -1)
+	{
+		perror("cd");
+		return (1);
+	}
+	printf("%s\n", oldpwd);
+	return (0);
+}
+
+char	*cd_handle_path(int argc, char **argv, t_env_list *env)
+{
+	if (argc == 1)
+		return (get_env_value(env, "HOME"));
+	if (argc == 2 && ft_strcmp(argv[1], "-") == 0)
+		return (NULL);
+	return (argv[1]);
+}
+
+int	my_cd_change_dir(int argc, char **argv,
+		t_env_list **env, char **oldpwd)
+{
+	int		ret;
+	char	*target;
+
+	*oldpwd = safe_getcwd();
+	if (!*oldpwd)
+	{
+		perror("cd");
+		return (-1);
+	}
+	if (argc == 2 && ft_strcmp(argv[1], "-") == 0)
+		ret = cd_to_oldpwd(*env);
 	else
 	{
-		printf("cd: Usage: cd <directory>\n");
-		return (1);
-	}
-	if (ret == 0)
-	{
-		setenv("OLDPWD", oldpwd, 1);
-		if (get_current_dir(cwd, sizeof(cwd)))
-			return (1);
-		setenv("PWD", cwd, 1);
+		target = cd_handle_path(argc, argv, *env);
+		ret = cd_to_target(target);
 	}
 	return (ret);
+}
+
+int	my_cd(int argc, char **argv, t_env_list *env)
+{
+	char	*oldpwd;
+	char	*cwd;
+	int		ret;
+
+	if (!env)
+		return (1);
+	ret = my_cd_change_dir(argc, argv, &env, &oldpwd);
+	if (ret == -1)
+		return (1);
+	if (ret != 0)
+		return (free(oldpwd), ret);
+	cwd = safe_getcwd();
+	if (!cwd)
+	{
+		free(oldpwd);
+		perror("cd");
+		return (1);
+	}
+	update_env_var(&env, "OLDPWD", oldpwd);
+	update_env_var(&env, "PWD", cwd);
+	free(oldpwd);
+	free(cwd);
+	return (0);
 }

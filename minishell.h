@@ -86,7 +86,7 @@ typedef struct s_ast_node
 
 
 //debug
-// void		print_tokens(t_token *token);
+void		print_tokens(t_token *token);
 // void		print_ast(t_ast_node *node, int depth);
 
 //signals
@@ -145,7 +145,7 @@ int			execute_ast(t_ast_node *node, t_env_list *env);
 int			execute_pipe(t_ast_node *node, t_env_list *env);
 int			execute_command_node(t_ast_node *cmd, t_env_list *env);
 int			is_builtin(char *cmd);
-int			run_builtin(int argc, char **argv, char ***envp);
+int			run_builtin(int argc, char **argv, t_env_list *envp);
 
 //herdocs handling
 char		*generate_heredoc_filename(void);
@@ -164,9 +164,25 @@ char		**env_list_to_envp(t_env_list *env);
 char		*find_path(char *cmd, char **envp);
 char		*my_getenv(char *name, char **envp);
 
-//builtin
-int			my_cd(int argc, char **argv);
-int			my_pwd(void);
+////builtins
+
+//pwd
+char		*safe_getcwd(void);
+t_env_list	*find_env_node(t_env_list *env, char *key);
+int			my_pwd(t_env_list *env);
+
+//cd
+char		*ft_strjoin3(char *s1, char *s2, char *s3);
+void		append_env_node_cd(t_env_list **head, t_env_list **new_node);
+void		update_env_var(t_env_list **env, char *key, char *value);
+char		*get_env_value(t_env_list *env, char *key);
+int			cd_to_target(char *target);
+int			cd_to_oldpwd(t_env_list *env);
+char		*cd_handle_path(int argc, char **argv, t_env_list *env);
+int			my_cd_change_dir(int argc, char **argv, t_env_list **env, char **oldpwd);
+int			my_cd(int argc, char **argv, t_env_list *env);
+
+
 int			my_echo(int argc, char**argv);
 char		**copy_env(char **envp);
 int			my_env(int argc, char **argv, char ***my_env);

@@ -20,10 +20,12 @@ SRCS = srcs/env_var/env_list.c \
 		srcs/execute/exec.c \
 		srcs/execute/exec_env.c \
 		srcs/builtins/cd.c \
-		srcs/builtins/env.c \
+		srcs/builtins/cd2.c \
+		srcs/builtins/echo.c \
+		srcs/builtins/pwd.c \
 		srcs/builtins/exit.c \
+		srcs/builtins/env.c \
 		srcs/builtins/export.c \
-		srcs/builtins/pwd_echo.c \
 		srcs/builtins/unset.c \
 		srcs/utils/utils.c \
 		srcs/banner.c \

@@ -29,26 +29,10 @@ int	my_echo(int argc, char**argv)
 	{
 		printf("%s", argv[i]);
 		i++;
-		if (i < argc - 1)
+		if (i < argc)
 			printf(" ");
 	}
 	if (no_line == 0)
 		printf("\n");
 	return (0);
-}
-
-int	my_pwd(void)
-{
-	char	cwd[PATH_MAX];
-
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-	{
-		printf("%s\n", cwd);
-		return (0);
-	}
-	else
-	{
-		perror("pwd");
-		return (1);
-	}
 }
