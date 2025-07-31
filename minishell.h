@@ -86,7 +86,7 @@ typedef struct s_ast_node
 
 
 //debug
-void		print_tokens(t_token *token);
+// void		print_tokens(t_token *token);
 // void		print_ast(t_ast_node *node, int depth);
 
 //signals
