@@ -22,7 +22,7 @@ void	init(int argc, char **argv, t_env_list **env_list, char **env)
 		exit(127);
 	}
 	cheaking_env(&(*env_list), env);
-	update_exit_status(env_list, 0);
+	// update_exit_status(env_list, 0);
 }
 
 bool has_unclosed_quotes(const char *input)

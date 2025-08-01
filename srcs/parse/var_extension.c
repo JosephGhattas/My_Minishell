@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 21:18:47 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/01 10:02:10 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/01 10:07:08 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,6 @@ char *expand_token_value(const char *input, t_env_list *env)
 
             free(name);
             result = ft_strjoin_free(result, val);
-            // free(val);
-
             i += var_len + 1;
             continue;
         }
