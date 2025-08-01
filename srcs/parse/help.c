@@ -50,21 +50,20 @@ void	read_word(const char *line, size_t *i, t_token **tokens)
 	while (line[*i] && !ft_isspace(line[*i]) && !is_metachar(line[*i]))
 	{
 		c = line[*i];
-		if (c == '\'')
+		if (c == '\'' || c == '"')
 		{
+			word = ft_strjoin_free(word, ft_char_to_str(c));
 			(*i)++;
-			while (line[*i] && line[*i] != '\'')
-				word = ft_strjoin_free(word, ft_char_to_str(line[(*i)++]));
-			if (line[*i] == '\'')
+			while (line[*i] && line[*i] != c)
+			{
+				word = ft_strjoin_free(word, ft_char_to_str(line[*i]));
 				(*i)++;
-		}
-		else if (c == '"')
-		{
-			(*i)++;
-			while (line[*i] && line[*i] != '"')
-				word = ft_strjoin_free(word, ft_char_to_str(line[(*i)++]));
-			if (line[*i] == '"')
+			}
+			if (line[*i] == c)
+			{
+				word = ft_strjoin_free(word, ft_char_to_str(line[*i]));
 				(*i)++;
+			}
 		}
 		else
 			word = ft_strjoin_free(word, ft_char_to_str(line[(*i)++]));

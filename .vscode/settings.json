@@ -3,6 +3,8 @@
 		"typeinfo": "c",
 		"minishell.h": "c",
 		"history.h": "c",
-		"limits.h": "c"
+		"limits.h": "c",
+		"type_traits": "c",
+		"utility": "c"
 	}
 }

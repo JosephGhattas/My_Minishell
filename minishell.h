@@ -71,6 +71,7 @@ typedef struct	s_redir
 	bool			is_heredoc;
     char			*filename;
 	char			*delimiter;
+	bool			heredoc_quoted;
     struct s_redir	*next;
 }	t_redir;
 
@@ -87,7 +88,7 @@ typedef struct s_ast_node
 
 //debug
 // void		print_tokens(t_token *token);
-// void		print_ast(t_ast_node *node, int depth);
+void		print_ast(t_ast_node *node, int depth);
 
 //signals
 void		sig_handler_prompt(int sig);
@@ -111,6 +112,15 @@ t_env_list	*add_shell_level(t_env_list *env_list);
 t_env_list	*generate_env_list(char **env);
 t_env_list	*create_default_env(void);
 
+//var expansion
+// static char	*get_special_var(char c, t_env_list *env);
+char    	*get_var_name(const char *s, int *len);
+char    	*get_env_value_exp(const char *key, t_env_list *env);
+char    	*expand_token_value(const char *input, t_env_list *env);
+void    	update_exit_status(t_env_list **env, int status);
+int			get_exit_status(t_env_list *env);
+
+
 //tokenization
 t_token		*tokenize_input(const char *line);
 t_token		*new_token(t_token_type type, char *value);
@@ -128,16 +138,16 @@ void		read_word(const char *line, size_t *i, t_token **tokens);
 t_token		*find_last_token(t_token    *token);
 t_token 	*find_first_token(t_token    *token);
 t_token		*find_last_token_of_type(t_token *start, t_token *end, t_token_type type);
-t_redir		*collect_redirections(t_token *start, t_token *end);
+t_redir		*collect_redirections(t_token *start, t_token *end, t_env_list *env);
 t_redir		*new_redir(t_token *token, t_token *next);
-char		**collect_args(t_token *start, t_token *end, int *argc);
+char		**collect_args(t_token *start, t_token *end, int *argc, t_env_list *env);
 int			count_args(t_token *start, t_token *end);
 
 //parse
 t_ast_node	*parse_input(char *input, t_env_list *my_env);
-t_ast_node	*parse_simple_command(t_token *start, t_token *end);
-t_ast_node	*parse_tokens(t_token *start, t_token *end);
-t_ast_node	*pipe_node(t_token *start, t_token *end, t_token *pipe_tok);
+t_ast_node	*parse_simple_command(t_token *start, t_token *end, t_env_list *env);
+t_ast_node	*parse_tokens(t_token *start, t_token *end, t_env_list *env);
+t_ast_node	*pipe_node(t_token *start, t_token *end, t_token *pipe_tok,t_env_list *env);
 
 //execute
 
@@ -197,6 +207,7 @@ void	free_ast(t_ast_node *node);
 
 //rnd
 void		printbanner(void);
+char	*ft_strndup(char *src, unsigned int n);
 
 //ansi colors
 //============================================
