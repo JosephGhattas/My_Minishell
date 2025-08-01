@@ -33,12 +33,11 @@ SRCS = srcs/env_var/env_list.c \
 		srcs/free.c \
 		srcs/signals.c
 		 
+OBJ_DIR = obj
+OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o) $(SRCS:.c=.o))
 
-OBJ = $(SRCS:.c=.o) $(SRC:.c=.o)
-%.o: %.c minishell.h
-	@$(CC) $(CFLAGS) -c $< -o $@
-
-%.o: srcs/%.c minishell.h
+$(OBJ_DIR)/%.o: %.c minishell.h
+	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 all: $(NAME)

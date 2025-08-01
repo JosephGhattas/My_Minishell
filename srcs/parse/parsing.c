@@ -79,6 +79,6 @@ t_ast_node	*parse_input(char *input, t_env_list *my_env)
 	token = tokenize_input(input);
 	tree = parse_tokens(find_first_token(token), find_last_token(token), my_env);
 	// print_tokens(token);
-	print_ast(tree, 0);
+	// print_ast(tree, 0);
 	return (tree);
 }

@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 00:03:31 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/01 00:58:53 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/01 11:55:34 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,73 +118,73 @@ t_redir	*collect_redirections(t_token *start, t_token *end, t_env_list *env)
 	return (head);
 }
 
-void	print_indent(int depth)
-{
-	while (depth-- > 0)
-		printf("    ");
-}
+// void	print_indent(int depth)
+// {
+// 	while (depth-- > 0)
+// 		printf("    ");
+// }
 
-void	print_redirections(t_redir *redir, int depth)
-{
-	while (redir)
-	{
-		print_indent(depth);
-		printf("REDIR: ");
-		if (redir->type == TOKEN_REDIR_IN)
-			printf("< ");
-		else if (redir->type == TOKEN_REDIR_OUT)
-			printf("> ");
-		else if (redir->type == TOKEN_REDIR_APPEND)
-			printf(">> ");
-		else if (redir->type == TOKEN_HEREDOC)
-			printf("<< ");
-		if (redir->is_heredoc && redir->delimiter)
-			printf("%s (delimiter)\n", redir->delimiter);
-		else if (redir->filename)
-			printf("%s\n", redir->filename);
-		else
-			printf("(null)\n");
-		redir = redir->next;
-	}
-}
+// void	print_redirections(t_redir *redir, int depth)
+// {
+// 	while (redir)
+// 	{
+// 		print_indent(depth);
+// 		printf("REDIR: ");
+// 		if (redir->type == TOKEN_REDIR_IN)
+// 			printf("< ");
+// 		else if (redir->type == TOKEN_REDIR_OUT)
+// 			printf("> ");
+// 		else if (redir->type == TOKEN_REDIR_APPEND)
+// 			printf(">> ");
+// 		else if (redir->type == TOKEN_HEREDOC)
+// 			printf("<< ");
+// 		if (redir->is_heredoc && redir->delimiter)
+// 			printf("%s (delimiter)\n", redir->delimiter);
+// 		else if (redir->filename)
+// 			printf("%s\n", redir->filename);
+// 		else
+// 			printf("(null)\n");
+// 		redir = redir->next;
+// 	}
+// }
 
-void	print_args(char **args, int argc, int depth)
-{
-	for (int i = 0; i < argc; i++)
-	{
-		print_indent(depth);
-		printf("ARG[%d]: %s\n", i, args[i]);
-	}
-}
+// void	print_args(char **args, int argc, int depth)
+// {
+// 	for (int i = 0; i < argc; i++)
+// 	{
+// 		print_indent(depth);
+// 		printf("ARG[%d]: %s\n", i, args[i]);
+// 	}
+// }
 
-void	print_ast(t_ast_node *node, int depth)
-{
-	if (!node)
-	{
-		print_indent(depth);
-		printf("(null)\n");
-		return;
-	}
+// void	print_ast(t_ast_node *node, int depth)
+// {
+// 	if (!node)
+// 	{
+// 		print_indent(depth);
+// 		printf("(null)\n");
+// 		return;
+// 	}
 
-	print_indent(depth);
-	if (node->type == NODE_PIPE)
-	{
-		printf("PIPE\n");
+// 	print_indent(depth);
+// 	if (node->type == NODE_PIPE)
+// 	{
+// 		printf("PIPE\n");
 
-		print_indent(depth);
-		printf("Left:\n");
-		print_ast(node->left, depth + 1);
+// 		print_indent(depth);
+// 		printf("Left:\n");
+// 		print_ast(node->left, depth + 1);
 
-		print_indent(depth);
-		printf("Right:\n");
-		print_ast(node->right, depth + 1);
-	}
-	else if (node->type == NODE_COMMAND)
-	{
-		printf("COMMAND\n");
-		if (node->args)
-			print_args(node->args, node->argc, depth + 1);
-		if (node->redirections)
-			print_redirections(node->redirections, depth + 1);
-	}
-}
+// 		print_indent(depth);
+// 		printf("Right:\n");
+// 		print_ast(node->right, depth + 1);
+// 	}
+// 	else if (node->type == NODE_COMMAND)
+// 	{
+// 		printf("COMMAND\n");
+// 		if (node->args)
+// 			print_args(node->args, node->argc, depth + 1);
+// 		if (node->redirections)
+// 			print_redirections(node->redirections, depth + 1);
+// 	}
+// }

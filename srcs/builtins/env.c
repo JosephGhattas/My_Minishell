@@ -12,43 +12,23 @@
 
 #include "../../minishell.h"
 
-char	**copy_env(char **envp)
+int	my_env(int argc, char **argv, t_env_list *env)
 {
-	int		i;
-	int		count;
-	char	**env;
+	t_env_list	*cur;
 
-	i = 0;
-	count = 0;
-	while (envp[count])
-		count++;
-	env = malloc(sizeof(char *) * (count + 1));
-	while (i < count)
-	{
-		env[i] = ft_strdup(envp[i]);
-		i++;
-	}
-	env[i] = NULL;
-	return (env);
-}
-
-int	my_env(int argc, char **argv, char ***my_env)
-{
-	int		i;
-	char	**envp;
-
-	envp = *my_env;
 	(void)argv;
-	i = 0;
 	if (argc > 1)
 	{
 		printf("env: too many arguments\n");
 		return (1);
 	}
-	while (envp[i])
+	cur = env;
+	while (cur)
 	{
-		printf("%s\n", envp[i]);
-		i++;
+		if (cur->equal)
+			printf("%s=%s\n", cur->type, cur->name);
+		cur = cur->next;
 	}
 	return (0);
 }
+

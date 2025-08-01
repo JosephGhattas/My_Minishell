@@ -88,7 +88,7 @@ typedef struct s_ast_node
 
 //debug
 // void		print_tokens(t_token *token);
-void		print_ast(t_ast_node *node, int depth);
+// void		print_ast(t_ast_node *node, int depth);
 
 //signals
 void		sig_handler_prompt(int sig);
@@ -174,7 +174,8 @@ char		**env_list_to_envp(t_env_list *env);
 char		*find_path(char *cmd, char **envp);
 char		*my_getenv(char *name, char **envp);
 
-////builtins
+//builtins//
+//=========//
 
 //pwd
 char		*safe_getcwd(void);
@@ -192,22 +193,31 @@ char		*cd_handle_path(int argc, char **argv, t_env_list *env);
 int			my_cd_change_dir(int argc, char **argv, t_env_list **env, char **oldpwd);
 int			my_cd(int argc, char **argv, t_env_list *env);
 
+//export
+int			my_export(int argc, char **argv, t_env_list **env);
+int			update_or_add_env_export(t_env_list **env, const char *arg);
+int			is_valid_identifier(const char *str);
+void		append_env_node_export(t_env_list **env, t_env_list *new);
+t_env_list	*create_env_node_export(char *key, char *value, bool equal);
+t_env_list	*find_env_var_export(t_env_list *env, const char *key);
 
+//unset
+void		remove_env_var(t_env_list **env, const char *key);
+int			my_unset(int argc, char **argv, t_env_list **env);
+//
+int			my_env(int argc, char **argv, t_env_list *env);
 int			my_echo(int argc, char**argv);
-char		**copy_env(char **envp);
-int			my_env(int argc, char **argv, char ***my_env);
-int			my_export(int argc, char **argv, char ***envp);
-int			my_unset(int argc, char **argv, char ***envp);
+
 int			my_exit(int argc, char **argv);
 
 //cleanup
 void		free_array(char **arr);
 void 		free_env_list_full(t_env_list *env);
-void	free_ast(t_ast_node *node);
+void		free_ast(t_ast_node *node);
 
 //rnd
 void		printbanner(void);
-char	*ft_strndup(char *src, unsigned int n);
+char		*ft_strndup(char *src, unsigned int n);
 
 //ansi colors
 //============================================
