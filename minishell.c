@@ -68,6 +68,7 @@ int	main(int argc, char **argv, char **envp)
 			exit(EXIT_FAILURE);
 		}
 		execute_ast(tree, env);
+		free_ast(tree);
         if (g_sig != 0)
 		{
 			env->exit_status = 128 + g_sig;
@@ -75,6 +76,5 @@ int	main(int argc, char **argv, char **envp)
 		}
     }
 	free_env_list_full(env);
-	free_ast(tree);
     return (0);
 }

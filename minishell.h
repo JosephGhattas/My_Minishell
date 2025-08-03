@@ -208,12 +208,18 @@ int			my_cd_change_dir(int argc, char **argv, t_env_list **env, char **oldpwd);
 int			my_cd(int argc, char **argv, t_env_list *env);
 
 //export
-int			my_export(int argc, char **argv, t_env_list **env);
-int			update_or_add_env_export(t_env_list **env, const char *arg);
 int			is_valid_identifier(const char *str);
-void		append_env_node_export(t_env_list **env, t_env_list *new);
-t_env_list	*create_env_node_export(char *key, char *value, bool equal);
 t_env_list	*find_env_var_export(t_env_list *env, const char *key);
+void		append_env_node_export(t_env_list **env, t_env_list *new);
+t_env_list	*create_env_node_export(char *key, char *val, bool equal);
+int			update_or_add_env_export(t_env_list **env, const char *arg);
+void		print_one_export(t_env_list *node);
+int			my_export(int argc, char **argv, t_env_list **env);
+int			handle_no_equal(t_env_list **env, const char *arg);
+int			handle_with_equal(t_env_list **env, const char *arg, char *eq);
+void		sort_env_array(t_env_list **arr, int count);
+void		print_sorted_env(t_env_list *env);
+int			process_arg(t_env_list **env, char *arg);
 
 //unset
 void		remove_env_var(t_env_list **env, const char *key);
