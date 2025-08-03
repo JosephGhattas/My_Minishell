@@ -64,7 +64,7 @@ void	free_array(char **arr)
 	free(arr);
 }
 
-void free_ast(t_ast_node *node)
+void	free_ast(t_ast_node *node)
 {
 	if (!node)
 		return ;
@@ -72,7 +72,7 @@ void free_ast(t_ast_node *node)
 	{
 		free_array(node->args);
 		free_redir_list(node->redirections);
-    }
+	}
 	else
 	{
 		free_ast(node->left);

@@ -12,6 +12,7 @@
 
 #include "../../minishell.h"
 
+//handle updating the exit code && numeric range form 0 255
 int	is_numeric(const char *s)
 {
 	int	i;

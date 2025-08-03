@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 10:18:39 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/01 11:04:54 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/04 00:28:41 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	execute_command_node(t_ast_node *cmd, t_env_list *env)
 	if (!cmd || !cmd->argc || !cmd->args[0])
 		return (1);
 	if (is_builtin(cmd->args[0]))
-		return(run_builtin(cmd->argc, cmd->args, env));
+		return (run_builtin(cmd->argc, cmd->args, env));
 	else
 	{
 		pid = fork();

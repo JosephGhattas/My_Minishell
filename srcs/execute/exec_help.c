@@ -42,15 +42,12 @@ char	*find_path(char *cmd, char **envp)
 		return (NULL);
 	if (ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
-
 	env_path = my_getenv("PATH", envp);
 	if (!env_path)
 		return (ft_strdup(cmd));
-
 	paths = ft_split(env_path, ':');
 	if (!paths)
 		return (ft_strdup(cmd));
-
 	i = -1;
 	while (paths[++i])
 	{
@@ -101,7 +98,8 @@ int	setup_redirections(t_redir *redir)
 		fd = open_redirection_file(redir);
 		if (fd == -1)
 			return (1);
-		if (redir->type == TOKEN_REDIR_IN || redir->type == TOKEN_HEREDOC)
+		if (redir->type == TOKEN_REDIR_IN
+			|| redir->type == TOKEN_HEREDOC)
 		{
 			if (dup2(fd, STDIN_FILENO) == -1)
 			{
@@ -110,7 +108,8 @@ int	setup_redirections(t_redir *redir)
 				return (1);
 			}
 		}
-		else if (redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_REDIR_APPEND)
+		else if (redir->type == TOKEN_REDIR_OUT
+			|| redir->type == TOKEN_REDIR_APPEND)
 		{
 			if (dup2(fd, STDOUT_FILENO) == -1)
 			{

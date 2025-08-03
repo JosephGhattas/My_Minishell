@@ -27,12 +27,11 @@ void	print_sorted_env(t_env_list *env)
 	if (!arr)
 		return ;
 	tmp = env;
-	i = -1;
+	i = 0;
 	while (tmp)
 	{
-		i++;
+		arr[i++] = tmp;
 		tmp = tmp->next;
-		arr[i] = tmp;
 	}
 	sort_env_array(arr, count);
 	i = -1;

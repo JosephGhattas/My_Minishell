@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/04 00:58:39 by jgh               #+#    #+#             */
+/*   Updated: 2025/08/04 00:58:39 by jgh              ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -16,36 +28,35 @@
 # include <readline/history.h>
 
 //global signals variable//
-extern volatile sig_atomic_t g_sig;
-
+extern volatile sig_atomic_t	g_sig;
 
 //envp variable list//
 typedef struct s_env_list
 {
-    char              *name;              // value
-    char              *type;              // key
-    bool              equal;              // true if '=' exists in original string
-    char              *heredoc_filename;  // for heredoc temp file
-	int               exit_status;        // exit status of the last command
-    char              *shell_pwd;      	// shell's PWD
-    char              *shell_oldpwd;   // shell's OLDPWD
-    struct s_env_list *next;
-    struct s_env_list *prev;
-}                 t_env_list;
+	char				*name;// value
+	char				*type;// key
+	bool				equal;// true if '=' exists in original string
+	char				*heredoc_filename;// for heredoc temp file
+	int					exit_status;// exit status of the last command
+	char				*shell_pwd;// shell's PWD
+	char				*shell_oldpwd;// shell's OLDPWD
+	struct s_env_list	*next;
+	struct s_env_list	*prev;
+}	t_env_list;
 
 //tokens list//
-typedef enum
+typedef enum s_token_type
 {
 	TOKEN_WORD,
 	TOKEN_PIPE,
-	TOKEN_REDIR_IN,     // <
-	TOKEN_REDIR_OUT,    // >
-	TOKEN_REDIR_APPEND, // >>
-	TOKEN_HEREDOC,      // <<
+	TOKEN_REDIR_IN,
+	TOKEN_REDIR_OUT,
+	TOKEN_REDIR_APPEND,
+	TOKEN_HEREDOC,
 	TOKEN_EOF
 }	t_token_type;
 
-typedef struct	s_token
+typedef struct s_token
 {
 	t_token_type	type;
 	char			*value;
@@ -53,38 +64,36 @@ typedef struct	s_token
 	struct s_token	*prev;
 }	t_token;
 
-
 //AST tree//
 typedef enum e_node_type
 {
-    NODE_COMMAND,
-    NODE_PIPE,
-    NODE_REDIR_IN,
-    NODE_REDIR_OUT,
-    NODE_REDIR_APPEND,
-    NODE_HEREDOC
-} t_node_type;
+	NODE_COMMAND,
+	NODE_PIPE,
+	NODE_REDIR_IN,
+	NODE_REDIR_OUT,
+	NODE_REDIR_APPEND,
+	NODE_HEREDOC
+}	t_node_type;
 
-typedef struct	s_redir
+typedef struct s_redir
 {
 	t_token_type	type;
 	bool			is_heredoc;
-    char			*filename;
+	char			*filename;
 	char			*delimiter;
 	bool			heredoc_quoted;
-    struct s_redir	*next;
+	struct s_redir	*next;
 }	t_redir;
 
 typedef struct s_ast_node
 {
-	t_node_type         type;
+	t_node_type			type;
 	char				**args;
 	int					argc;
 	struct s_ast_node	*left;
 	struct s_ast_node	*right;
 	t_redir				*redirections;
 }	t_ast_node;
-
 
 //debug
 void		print_tokens(t_token *token);
@@ -100,7 +109,6 @@ bool		print_redir_error(char c);
 bool		detect_invalid_metachar(const char *s);
 bool		process_redirection(const char *s, int *i);
 bool		detect_redir_errors(const char *s);
-
 
 //signals
 void		sig_handler_prompt(int sig);
@@ -129,9 +137,8 @@ char		*get_special_var(char c, t_env_list *env);
 char		*get_var_name(const char *s, int *len);
 char		*get_env_value_exp(const char *key, t_env_list *env);
 char		*expand_token_value(const char *input, t_env_list *env);
-void    	update_exit_status(t_env_list **env, int status);
+void		update_exit_status(t_env_list **env, int status);
 int			get_exit_status(t_env_list *env);
-
 
 //tokenization
 t_token		*tokenize_input(const char *line);
@@ -141,26 +148,31 @@ void		add_token(t_token **head, t_token *new_tok);
 //help tokenization
 int			ft_isspace(char c);
 int			is_metachar(char c);
-char 		*ft_char_to_str(char c);
-char 		*ft_strjoin_free(char *s1, char *s2);
+char		*ft_char_to_str(char c);
+char		*ft_strjoin_free(char *s1, char *s2);
 void		read_operator(const char *line, size_t *i, t_token **tokens);
 void		read_word(const char *line, size_t *i, t_token **tokens);
 
 //AST Tree
-t_token		*find_last_token(t_token    *token);
-t_token 	*find_first_token(t_token    *token);
-t_token		*find_last_token_of_type(t_token *start, t_token *end, t_token_type type);
-t_redir		*collect_redirections(t_token *start, t_token *end, t_env_list *env);
+t_token		*find_last_token(t_token *token);
+t_token		*find_first_token(t_token *token);
+t_token		*find_last_token_of_type(t_token *start,
+				t_token *end, t_token_type type);
+t_redir		*collect_redirections(t_token *start,
+				t_token *end, t_env_list *env);
 t_redir		*new_redir(t_token *token, t_token *next);
 void		append_redir(t_redir **head, t_redir **tail, t_redir *new_redir);
-char		**collect_args(t_token *start, t_token *end, int *argc, t_env_list *env);
+char		**collect_args(t_token *start, t_token *end,
+				int *argc, t_env_list *env);
 int			count_args(t_token *start, t_token *end);
 
 //parse
 t_ast_node	*parse_input(char *input, t_env_list *my_env);
-t_ast_node	*parse_simple_command(t_token *start, t_token *end, t_env_list *env);
+t_ast_node	*parse_simple_command(t_token *start,
+				t_token *end, t_env_list *env);
 t_ast_node	*parse_tokens(t_token *start, t_token *end, t_env_list *env);
-t_ast_node	*pipe_node(t_token *start, t_token *end, t_token *pipe_tok,t_env_list *env);
+t_ast_node	*pipe_node(t_token *start, t_token *end,
+				t_token *pipe_tok, t_env_list *env);
 
 //execute
 
@@ -179,7 +191,6 @@ int			setup_all_heredocs(t_ast_node *node);
 //redirections
 int			setup_redirections(t_redir *redir);
 int			open_redirection_file(t_redir *redir);
-
 
 //exec_env
 int			env_list_size(t_env_list *env);
@@ -204,7 +215,8 @@ char		*get_env_value(t_env_list *env, char *key);
 int			cd_to_target(char *target);
 int			cd_to_oldpwd(t_env_list *env);
 char		*cd_handle_path(int argc, char **argv, t_env_list *env);
-int			my_cd_change_dir(int argc, char **argv, t_env_list **env, char **oldpwd);
+int			my_cd_change_dir(int argc, char **argv,
+				t_env_list **env, char **oldpwd);
 int			my_cd(int argc, char **argv, t_env_list *env);
 
 //export
@@ -230,9 +242,9 @@ int			my_echo(int argc, char**argv);
 
 int			my_exit(int argc, char **argv);
 
-//cleanup
+//cleanu
 void		free_array(char **arr);
-void 		free_env_list_full(t_env_list *env);
+void		free_env_list_full(t_env_list *env);
 void		free_tokens(t_token *tok);
 void		free_single_redir(t_redir *redir);
 void		free_redir_list(t_redir *head);
