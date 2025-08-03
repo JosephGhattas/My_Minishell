@@ -12,7 +12,22 @@
 
 #include "../../minishell.h"
 
-t_ast_node	*pipe_node(t_token *start, t_token *end, t_token *pipe_tok, t_env_list *env)
+static bool	redirection_exists_between(t_token *start, t_token *end)
+{
+	t_token	*cur;
+
+	cur = start;
+	while (cur && cur != end->next)
+	{
+		if (cur->type >= TOKEN_REDIR_IN && cur->type <= TOKEN_HEREDOC)
+			return (true);
+		cur = cur->next;
+	}
+	return (false);
+}
+
+t_ast_node	*pipe_node(t_token *start, t_token *end,
+	t_token *pipe_tok, t_env_list *env)
 {
 	t_ast_node	*node;
 
@@ -25,13 +40,17 @@ t_ast_node	*pipe_node(t_token *start, t_token *end, t_token *pipe_tok, t_env_lis
 	node->args = NULL;
 	node->argc = 0;
 	node->redirections = NULL;
-	if (!pipe_tok->prev || !pipe_tok->next)
+	node->left = parse_tokens(start, pipe_tok->prev, env);
+	node->right = parse_tokens(pipe_tok->next, end, env);
+	if (!node->left || !node->right)
 	{
+		if (node->left)
+			free_ast(node->left);
+		if (node->right)
+			free_ast(node->right);
 		free(node);
 		return (NULL);
 	}
-	node->left = parse_tokens(start, pipe_tok->prev, env);
-	node->right = parse_tokens(pipe_tok->next, end, env);
 	return (node);
 }
 
@@ -48,7 +67,18 @@ t_ast_node	*parse_simple_command(t_token *start, t_token *end, t_env_list *env)
 	node->left = NULL;
 	node->right = NULL;
 	node->args = collect_args(start, end, &node->argc, env);
+	if (!node->args)
+	{
+		free(node);
+		return (NULL);
+	}
 	node->redirections = collect_redirections(start, end, env);
+	if (!node->redirections && redirection_exists_between(start, end))
+	{
+		free_array(node->args);
+		free(node);
+		return (NULL);
+	}
 	return (node);
 }
 
@@ -77,8 +107,16 @@ t_ast_node	*parse_input(char *input, t_env_list *my_env)
 
 	(void)my_env;
 	token = tokenize_input(input);
-	tree = parse_tokens(find_first_token(token), find_last_token(token), my_env);
-	// print_tokens(token);
-	// print_ast(tree, 0);
+	tree = parse_tokens(find_first_token(token),
+			find_last_token(token), my_env);
+	free_tokens(token);
 	return (tree);
 }
+
+/*
+can be used for debugging in parse_input:
+print_tokens(token);
+printf("\n\n");
+print_ast(tree, 0);
+printf("\n\n");
+*/

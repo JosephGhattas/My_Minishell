@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 12:47:49 by jgh               #+#    #+#             */
-/*   Updated: 2025/07/28 14:43:00 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/03 19:08:16 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,17 @@ t_redir	*new_redir(t_token *token, t_token *next)
 	redir->delimiter = NULL;
 	redir->next = NULL;
 	if (redir->is_heredoc && next)
+	{
 		redir->delimiter = ft_strdup(next->value);
+		if (!redir->delimiter)
+			return (free(redir), NULL);
+	}
 	else if (next)
+	{
 		redir->filename = ft_strdup(next->value);
+		if (!redir->filename)
+			return (free(redir), NULL);
+	}
 	return (redir);
 }
 

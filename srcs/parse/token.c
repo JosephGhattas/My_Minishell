@@ -70,5 +70,3 @@ t_token	*tokenize_input(const char *line)
 // 	}
 // 	printf("\n\n\n");
 // }
-
-//remember to test what happens wiht #

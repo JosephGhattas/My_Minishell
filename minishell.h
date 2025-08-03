@@ -87,8 +87,20 @@ typedef struct s_ast_node
 
 
 //debug
-// void		print_tokens(t_token *token);
-// void		print_ast(t_ast_node *node, int depth);
+void		print_tokens(t_token *token);
+void		print_ast(t_ast_node *node, int depth);
+
+//syntax
+bool		is_only_whitespace(const char *s);
+bool		detect_unclosed_quotes_silent(const char *s);
+bool		detect_trailing_pipe(const char *s);
+char		*read_complete_input(void);
+bool		detect_consecutive_pipes(const char *s);
+bool		print_redir_error(char c);
+bool		detect_invalid_metachar(const char *s);
+bool		process_redirection(const char *s, int *i);
+bool		detect_redir_errors(const char *s);
+
 
 //signals
 void		sig_handler_prompt(int sig);
@@ -113,10 +125,10 @@ t_env_list	*generate_env_list(char **env);
 t_env_list	*create_default_env(void);
 
 //var expansion
-// static char	*get_special_var(char c, t_env_list *env);
-char    	*get_var_name(const char *s, int *len);
-char    	*get_env_value_exp(const char *key, t_env_list *env);
-char    	*expand_token_value(const char *input, t_env_list *env);
+char		*get_special_var(char c, t_env_list *env);
+char		*get_var_name(const char *s, int *len);
+char		*get_env_value_exp(const char *key, t_env_list *env);
+char		*expand_token_value(const char *input, t_env_list *env);
 void    	update_exit_status(t_env_list **env, int status);
 int			get_exit_status(t_env_list *env);
 
@@ -140,6 +152,7 @@ t_token 	*find_first_token(t_token    *token);
 t_token		*find_last_token_of_type(t_token *start, t_token *end, t_token_type type);
 t_redir		*collect_redirections(t_token *start, t_token *end, t_env_list *env);
 t_redir		*new_redir(t_token *token, t_token *next);
+void		append_redir(t_redir **head, t_redir **tail, t_redir *new_redir);
 char		**collect_args(t_token *start, t_token *end, int *argc, t_env_list *env);
 int			count_args(t_token *start, t_token *end);
 
@@ -166,6 +179,7 @@ int			setup_all_heredocs(t_ast_node *node);
 //redirections
 int			setup_redirections(t_redir *redir);
 int			open_redirection_file(t_redir *redir);
+
 
 //exec_env
 int			env_list_size(t_env_list *env);
@@ -213,6 +227,10 @@ int			my_exit(int argc, char **argv);
 //cleanup
 void		free_array(char **arr);
 void 		free_env_list_full(t_env_list *env);
+void		free_tokens(t_token *tok);
+void		free_single_redir(t_redir *redir);
+void		free_redir_list(t_redir *head);
+
 void		free_ast(t_ast_node *node);
 
 //rnd

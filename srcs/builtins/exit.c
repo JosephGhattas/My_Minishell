@@ -40,7 +40,7 @@ int	my_exit(int argc, char **argv)
 	if (!is_numeric(argv[1]))
 	{
 		printf("exit: %s: numeric argument required\n", argv[1]);
-		exit(255);
+		exit(2);
 	}
 	if (argc > 2)
 	{

@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 14:06:08 by jgh               #+#    #+#             */
-/*   Updated: 2025/07/31 22:58:13 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/03 12:46:39 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,22 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	if (!s1 && !s2)
 		return (NULL);
 	else if (!s1)
-		return (s2);
+	{
+		res = ft_strdup(s2);
+		return (free(s2), res);
+	}
 	else if (!s2)
-		return (s1);
+	{
+		res = ft_strdup(s1);
+		return (free(s1), res);
+	}
 	res = ft_strjoin(s1, s2);
+	if (!res)
+	{
+		free(s1);
+		free(s2);
+		return (NULL);
+	}
 	free(s1);
 	free(s2);
 	return (res);

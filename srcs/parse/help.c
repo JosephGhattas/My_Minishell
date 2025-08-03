@@ -41,6 +41,26 @@ void	read_operator(const char *line, size_t *i, t_token **tokens)
 	}
 }
 
+char	*quoted_word(const char *line, size_t *i, char *word)
+{
+	char	c;
+
+	c = line[*i];
+	word = ft_strjoin_free(word, ft_char_to_str(c));
+	(*i)++;
+	while (line[*i] && line[*i] != c)
+	{
+		word = ft_strjoin_free(word, ft_char_to_str(line[*i]));
+		(*i)++;
+	}
+	if (line[*i] == c)
+	{
+		word = ft_strjoin_free(word, ft_char_to_str(line[*i]));
+		(*i)++;
+	}
+	return (word);
+}
+
 void	read_word(const char *line, size_t *i, t_token **tokens)
 {
 	char	*word;
@@ -51,20 +71,7 @@ void	read_word(const char *line, size_t *i, t_token **tokens)
 	{
 		c = line[*i];
 		if (c == '\'' || c == '"')
-		{
-			word = ft_strjoin_free(word, ft_char_to_str(c));
-			(*i)++;
-			while (line[*i] && line[*i] != c)
-			{
-				word = ft_strjoin_free(word, ft_char_to_str(line[*i]));
-				(*i)++;
-			}
-			if (line[*i] == c)
-			{
-				word = ft_strjoin_free(word, ft_char_to_str(line[*i]));
-				(*i)++;
-			}
-		}
+			word = quoted_word(line, i, word);
 		else
 			word = ft_strjoin_free(word, ft_char_to_str(line[(*i)++]));
 	}

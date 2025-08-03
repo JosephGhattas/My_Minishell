@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 00:03:31 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/01 11:55:34 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/03 22:08:39 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@ char	**collect_args(t_token *start, t_token *end, int *argc, t_env_list *env)
 	if (!start || !end || !argc)
 		return (NULL);
 	*argc = count_args(start, end);
-	if (*argc < 0)
-		return (NULL);
 	args = malloc(sizeof(char *) * (*argc + 1));
 	if (!args)
 		return (NULL);
@@ -56,7 +54,7 @@ char	**collect_args(t_token *start, t_token *end, int *argc, t_env_list *env)
 	return (args);
 }
 
-static void	append_redir(t_redir **head, t_redir **tail, t_redir *new_redir)
+void	append_redir(t_redir **head, t_redir **tail, t_redir *new_redir)
 {
 	if (!*head)
 		*head = new_redir;
@@ -65,57 +63,28 @@ static void	append_redir(t_redir **head, t_redir **tail, t_redir *new_redir)
 	*tail = new_redir;
 }
 
-t_redir	*collect_redirections(t_token *start, t_token *end, t_env_list *env)
+void	free_redir_list(t_redir *head)
 {
-	t_token	*cur;
-	t_redir	*head;
-	t_redir	*tail;
-	t_redir	*redir;
+	t_redir	*tmp;
 
-	if (!start || !end)
-		return (NULL);
-	head = NULL;
-	tail = NULL;
-	cur = start;
-	while (cur && cur != end->next)
+	while (head)
 	{
-		if (cur->type >= TOKEN_REDIR_IN && cur->type <= TOKEN_HEREDOC)
-		{
-			if (!cur->next || cur->next->type != TOKEN_WORD)
-				return (NULL);
-			redir = new_redir(cur, cur->next);
-			if(!redir)
-				return (NULL);
-			if (redir)
-			{
-				if (redir->is_heredoc)
-				{
-					// Heredoc delimiter handling
-					size_t len = ft_strlen(redir->delimiter);
-					if (len >= 2 && ((redir->delimiter[0] == '\'' && 
-						redir->delimiter[len-1] == '\'') ||
-						(redir->delimiter[0] == '"' && 
-						redir->delimiter[len-1] == '"')))
-					{
-						char *temp = ft_strndup(redir->delimiter+1, len-2);
-						free(redir->delimiter);
-						redir->delimiter = temp;
-						redir->heredoc_quoted = true;
-					}
-				}
-				else if (redir->filename)
-				{
-					char *expanded = expand_token_value(redir->filename, env);
-					free(redir->filename);
-					redir->filename = expanded;
-				}
-			}
-			append_redir(&head, &tail, redir);
-			cur = cur->next;
-		}
-		cur = cur->next;
+		tmp = head->next;
+		free(head->filename);
+		if (head->delimiter)
+			free(head->delimiter);
+		free(head);
+		head = tmp;
 	}
-	return (head);
+}
+
+void	free_single_redir(t_redir *redir)
+{
+	if (!redir)
+		return ;
+	free(redir->filename);
+	free(redir->delimiter);
+	free(redir);
 }
 
 // void	print_indent(int depth)

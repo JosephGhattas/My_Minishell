@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 void	init(int argc, char **argv, t_env_list **env_list, char **env)
 {
 	(void)argv;
@@ -25,26 +24,6 @@ void	init(int argc, char **argv, t_env_list **env_list, char **env)
 	// update_exit_status(env_list, 0);
 }
 
-bool has_unclosed_quotes(const char *input)
-{
-	char quote_type = 0; 
-	int i = 0;
-	while (input[i])
-	{
-    	if ((input[i] == '"' || input[i] == '\'')) {
-        	if (quote_type == 0) {
-            	// Start of a quote
-            	quote_type = input[i];
-        	} else if (quote_type == input[i]) {
-            	// Closing the current quote
-            	quote_type = 0;
-        	}
-    	}
-    	i++;
-	}
-	return (quote_type);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_env_list *env;
@@ -55,22 +34,25 @@ int	main(int argc, char **argv, char **envp)
     init(argc, argv, &env, envp);
     while (1)
     {
-        setup_signals_prompt();
-	    input = readline("CJminishell$ ");
+		setup_signals_prompt();
+		input = readline("minishell$ ");
+	    // input = read_complete_input();
+
 		if (!input)
-		{
-            free(input);
-			free_env_list_full(env);
-			exit(EXIT_FAILURE);
-		}
-		if (has_unclosed_quotes(input))// added by charbel
+			break ;
+		if (!*input || is_only_whitespace(input))
         {
-            fprintf(stderr, "Syntax error: unclosed quote detected.\n");
             free(input);
             continue;
         }
-		if (*input)
-			add_history(input);
+		add_history(input);
+	    // if (detect_invalid_metachar(input)
+		// 	|| detect_redir_errors(input)
+		// 	|| detect_consecutive_pipes(input))
+        // {
+        //     free(input);
+        //     continue;
+        // }
 		tree = parse_input(input, env);
 		free(input);
         if (!tree)

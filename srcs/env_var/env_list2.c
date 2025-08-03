@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 12:56:36 by jgh               #+#    #+#             */
-/*   Updated: 2025/07/25 13:01:54 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/03 11:24:35 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,25 +43,33 @@ void	new_node_filling(t_env_list **new_node, t_env_list **head)
 	(*new_node)->prev = NULL;
 }
 
+static t_env_list	*update_shell_level(t_env_list *env_list)
+{
+	int	shell_level;
+
+	if (ft_strcmp(env_list->type, "SHLVL") == 0)
+	{
+		shell_level = ft_atoi(env_list->name);
+		check_shell_number(&shell_level);
+		free(env_list->name);
+		env_list->name = ft_itoa(shell_level);
+		if (!env_list->name)
+			memory_error();
+		return (env_list);
+	}
+	return (NULL);
+}
+
 t_env_list	*add_shell_level(t_env_list *env_list)
 {
 	t_env_list	*head;
 	t_env_list	*new_node;
-	int			shell_level;
 
 	head = env_list;
 	while (env_list)
 	{
-		if (ft_strcmp(env_list->type, "SHLVL") == 0)
-		{
-			shell_level = ft_atoi(env_list->name);
-			check_shell_number(&shell_level);
-			free(env_list->name);
-			env_list->name = ft_itoa(shell_level);
-			if (!env_list->name)
-				memory_error();
+		if (update_shell_level(env_list))
 			return (head);
-		}
 		env_list = env_list->next;
 	}
 	new_node = malloc(sizeof(t_env_list));

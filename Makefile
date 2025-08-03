@@ -14,7 +14,9 @@ SRCS = srcs/env_var/env_list.c \
 		srcs/parse/token.c \
 		srcs/parse/tree.c \
 		srcs/parse/tree_help.c \
-		srcs/parse/var_extension.c \
+		srcs/parse/redir.c \
+		srcs/parse/var_expansion.c \
+		srcs/parse/var_expansion2.c \
 		srcs/execute/builtin.c \
 		srcs/execute/hdoc.c \
 		srcs/execute/exec_help.c \
@@ -29,6 +31,8 @@ SRCS = srcs/env_var/env_list.c \
 		srcs/builtins/export.c \
 		srcs/builtins/unset.c \
 		srcs/utils/utils.c \
+		srcs/utils/syntax.c \
+		srcs/utils/syntax_help.c \
 		srcs/banner.c \
 		srcs/free.c \
 		srcs/signals.c
