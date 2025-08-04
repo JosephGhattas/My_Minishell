@@ -12,42 +12,12 @@
 
 #include "../..//minishell.h"
 
-char	*my_getenv(char *name, char **envp)
+char	*search_in_paths(char *cmd, char **paths)
 {
-	int		i;
-	int		len;
-
-	i = 0;
-	while (envp[i])
-	{
-		len = 0;
-		while (envp[i][len] && envp[i][len] != '=')
-			len++;
-		if (!ft_strncmp(envp[i], name, len) && envp[i][len] == '=')
-			return (envp[i] + len + 1);
-		i++;
-	}
-	return (NULL);
-}
-
-char	*find_path(char *cmd, char **envp)
-{
-	char	**paths;
-	char	*env_path;
-	char	*full_path;
 	char	*temp;
+	char	*full_path;
 	int		i;
 
-	if (!cmd)
-		return (NULL);
-	if (ft_strchr(cmd, '/'))
-		return (ft_strdup(cmd));
-	env_path = my_getenv("PATH", envp);
-	if (!env_path)
-		return (ft_strdup(cmd));
-	paths = ft_split(env_path, ':');
-	if (!paths)
-		return (ft_strdup(cmd));
 	i = -1;
 	while (paths[++i])
 	{
@@ -60,14 +30,38 @@ char	*find_path(char *cmd, char **envp)
 			{
 				if (access(full_path, F_OK | X_OK) == 0)
 				{
-					free_array(paths);
 					return (full_path);
 				}
 				free(full_path);
 			}
 		}
 	}
+	return (NULL);
+}
+
+char	*find_path(char *cmd, char **envp)
+{
+	char	**paths;
+	char	*env_path;
+	char	*full_path;
+
+	paths = NULL;
+	env_path = 	NULL;
+	full_path = NULL;
+	if (!cmd)
+		return (NULL);
+	if (ft_strchr(cmd, '/'))
+		return (ft_strdup(cmd));
+	env_path = my_getenv("PATH", envp);
+	if (!env_path)
+		return (ft_strdup(cmd));
+	paths = ft_split(env_path, ':');
+	if (!paths)
+		return (ft_strdup(cmd));
+	full_path = search_in_paths(cmd, paths);
 	free_array(paths);
+	if (full_path)
+		return (full_path);
 	return (ft_strdup(cmd));
 }
 
@@ -89,6 +83,18 @@ int	open_redirection_file(t_redir *redir)
 	return (fd);
 }
 
+int	dup2_with_check(int oldfd, int newfd)
+{
+	if (dup2(oldfd, newfd) == -1)
+	{
+		perror("dup2");
+		close(oldfd);
+		return (1);
+	}
+	close(oldfd);
+	return (0);
+}
+
 int	setup_redirections(t_redir *redir)
 {
 	int	fd;
@@ -101,24 +107,15 @@ int	setup_redirections(t_redir *redir)
 		if (redir->type == TOKEN_REDIR_IN
 			|| redir->type == TOKEN_HEREDOC)
 		{
-			if (dup2(fd, STDIN_FILENO) == -1)
-			{
-				perror("dup2");
-				close(fd);
+			if (dup2_with_check(fd, STDIN_FILENO))
 				return (1);
-			}
 		}
 		else if (redir->type == TOKEN_REDIR_OUT
 			|| redir->type == TOKEN_REDIR_APPEND)
 		{
-			if (dup2(fd, STDOUT_FILENO) == -1)
-			{
-				perror("dup2");
-				close(fd);
+			if (dup2_with_check(fd, STDOUT_FILENO))
 				return (1);
-			}
 		}
-		close(fd);
 		redir = redir->next;
 	}
 	return (0);

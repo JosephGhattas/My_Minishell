@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 12:22:30 by jgh               #+#    #+#             */
-/*   Updated: 2025/07/29 12:40:46 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/04 17:39:31 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,14 @@ char	*generate_heredoc_filename(void)
 	return (name);
 }
 
+int	fd_failed(t_redir	*redir)
+{
+	free(redir->filename);
+	redir->filename = NULL;
+	perror("open");
+	return (-1);
+}
+
 int	create_heredoc_file(t_redir *redir)
 {
 	int		fd;
@@ -41,7 +49,7 @@ int	create_heredoc_file(t_redir *redir)
 		return (-1);
 	fd = open(redir->filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
 	if (fd == -1)
-		return (perror("open"), -1);
+		return (fd_failed(redir));
 	while (1)
 	{
 		line = readline("> ");

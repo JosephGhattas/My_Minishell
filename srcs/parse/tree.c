@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 00:03:31 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/03 22:08:39 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/04 14:35:23 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,11 @@ void	free_redir_list(t_redir *head)
 	while (head)
 	{
 		tmp = head->next;
-		free(head->filename);
+		if (head->filename)
+		{
+			unlink(head->filename);
+			free(head->filename);
+		}
 		if (head->delimiter)
 			free(head->delimiter);
 		free(head);

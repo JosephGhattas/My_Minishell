@@ -6,11 +6,29 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 13:18:11 by jgh               #+#    #+#             */
-/*   Updated: 2025/07/29 13:20:04 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/04 17:57:40 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+char	*my_getenv(char *name, char **envp)
+{
+	int		i;
+	int		len;
+
+	i = 0;
+	while (envp[i])
+	{
+		len = 0;
+		while (envp[i][len] && envp[i][len] != '=')
+			len++;
+		if (!ft_strncmp(envp[i], name, len) && envp[i][len] == '=')
+			return (envp[i] + len + 1);
+		i++;
+	}
+	return (NULL);
+}
 
 int	env_list_size(t_env_list *env)
 {
@@ -45,11 +63,9 @@ char	**env_list_to_envp(t_env_list *env)
 {
 	char		**envp;
 	char		*entry;
-	int			size;
 	int			i;
 
-	size = env_list_size(env);
-	envp = malloc(sizeof(char *) * (size + 1));
+	envp = malloc(sizeof(char *) * ((env_list_size(env)) + 1));
 	if (!envp)
 		return (NULL);
 	i = 0;
@@ -62,8 +78,7 @@ char	**env_list_to_envp(t_env_list *env)
 			{
 				while (i--)
 					free(envp[i]);
-				free(envp);
-				return (NULL);
+				return (free(envp), NULL);
 			}
 			envp[i++] = entry;
 		}
