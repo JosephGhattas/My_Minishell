@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 10:18:39 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/04 19:57:03 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/04 21:06:07 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,58 +85,6 @@ int	execute_pipe(t_ast_node *node, t_env_list *env)
 	else if (WIFSIGNALED(status))
 		return (128 + WTERMSIG(status));
 	return (1);
-}
-
-int	execute_command_node(t_ast_node *cmd, t_env_list *env)
-{
-	pid_t	pid;
-	int		status;
-	char	*path;
-	char	**envp;
-
-	status = 0;
-	if (!cmd || !cmd->argc || !cmd->args[0])
-		return (1);
-	if (is_builtin(cmd->args[0]))
-	{
-		int saved_stdin = dup(STDIN_FILENO);
-		int saved_stdout = dup(STDOUT_FILENO);
-		if (setup_redirections(cmd->redirections) != 0)
-			status = 1;
-		else
-			status = run_builtin(cmd->argc, cmd->args, env);
-		dup2(saved_stdin, STDIN_FILENO);
-        dup2(saved_stdout, STDOUT_FILENO);
-        close(saved_stdin);
-        close(saved_stdout);
-	}
-	else
-	{
-		pid = fork();
-		if (pid == 0)
-		{
-			if (setup_redirections(cmd->redirections) != 0)
-				exit(EXIT_FAILURE);
-			envp = env_list_to_envp(env);
-			if (!envp)
-				exit(125);
-			path = find_path(cmd->args[0], envp);
-			if (!path)
-			{
-				free_array(envp);
-				exit(127);
-			}
-			setup_signals_exec();
-			execve(path, cmd->args, envp);
-			free(path);
-			free_array(envp);
-			perror("execve");
-			exit(126);
-		}
-		else
-			waitpid(pid, &status, 0);
-	}
-	return (WEXITSTATUS(status));
 }
 
 int	execute_ast(t_ast_node *node, t_env_list *env)

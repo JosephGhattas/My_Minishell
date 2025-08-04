@@ -21,6 +21,7 @@ SRCS = srcs/env_var/env_list.c \
 		srcs/execute/hdoc.c \
 		srcs/execute/exec_help.c \
 		srcs/execute/exec.c \
+		srcs/execute/exec_cmd.c \
 		srcs/execute/exec_env.c \
 		srcs/builtins/cd.c \
 		srcs/builtins/cd2.c \

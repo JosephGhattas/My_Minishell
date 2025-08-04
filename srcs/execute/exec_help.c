@@ -46,7 +46,7 @@ char	*find_path(char *cmd, char **envp)
 	char	*full_path;
 
 	paths = NULL;
-	env_path = 	NULL;
+	env_path = NULL;
 	full_path = NULL;
 	if (!cmd)
 		return (NULL);
