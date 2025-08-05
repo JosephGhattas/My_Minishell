@@ -30,6 +30,7 @@ int	main(int argc, char **argv, char **envp)
     char        *input;
     t_ast_node   *tree;
 	int		exit_status;
+	t_redir	*redir;
 
 	exit_status = 0;
 	printbanner();
@@ -59,7 +60,8 @@ int	main(int argc, char **argv, char **envp)
         {
 			free_env_list_full(env);
             exit (EXIT_FAILURE);
-        }  
+        } 
+		redir = tree->redirections;
 		if (setup_all_heredocs(tree) != 0)
 		{
 			perror("Heredoc interrupted");
@@ -76,6 +78,7 @@ int	main(int argc, char **argv, char **envp)
 			g_sig = 0;
 		}
     }
+	free_redir_list(redir);
 	free_env_list_full(env);
 	rl_clear_history();
 	rl_free_line_state();

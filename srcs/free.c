@@ -88,7 +88,6 @@ void	free_ast(t_ast_node *node)
 	if (node->type == NODE_COMMAND)
 	{
 		free_array(node->args);
-		// free_redir_list(node->redirections);
 	}
 	else
 	{
