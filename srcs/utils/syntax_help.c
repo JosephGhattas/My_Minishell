@@ -1,126 +1,117 @@
-/* helpers.c */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   syntax_help.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/04 23:47:11 by jgh               #+#    #+#             */
+/*   Updated: 2025/08/05 03:23:16 by jgh              ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "minishell.h"
-#include <readline/readline.h>
-#include <stdlib.h>
-#include <stdbool.h>
+#include "../../minishell.h"
 
-/*
-** Return true if there is an unclosed ' or " in s (silent version).
-*/
-bool	detect_unclosed_quotes_silent(const char *s)
+static bool	print_redir_error(char c)
+{
+	if (c == '\0')
+		ft_putstr_fd(
+			"minishell: syntax error near unexpected token `newline'\n", 2);
+	else
+	{
+		ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
+		write(2, &c, 1);
+		ft_putstr_fd("'\n", 2);
+	}
+	return (true);
+}
+
+static bool	process_redirection(const char *s, int *i)
+{
+	char	op;
+	int		len;
+
+	len = ft_strlen(s);
+	while (*i < len && ft_isdigit((unsigned char)s[*i]))
+		(*i)++;
+	if (*i >= len)
+		return (print_redir_error('\0'));
+	op = s[(*i)++];
+	if (*i < len && s[*i] == op)
+	{
+		(*i)++;
+		if (*i < len && s[*i] == op)
+			return (print_redir_error(op));
+	}
+	while (*i < len && s[*i] && ft_isspace((unsigned char)s[*i]))
+		(*i)++;
+	if (*i >= len)
+		return (print_redir_error('\0'));
+	if (s[*i] == '\0' || s[*i] == '|' || s[*i] == '<' || s[*i] == '>')
+		return (print_redir_error(s[*i]));
+	return (false);
+}
+
+bool	detect_redir_errors(const char *s)
 {
 	char	q;
 	int		i;
+	int		temp;
 
 	q = 0;
 	i = 0;
 	while (s[i])
 	{
-		if (s[i] == '"' || s[i] == '\'')
+		temp = q;
+		q = update_quote(q, s[i]);
+		if (q != temp)
+			i++;
+		if (q == 0 && (s[i] == '<' || s[i] == '>'
+				|| (ft_isdigit((unsigned char)s[i])
+					&& s[i + 1] != '\0'
+					&& ft_strchr("<>", s[i + 1]))))
 		{
-			if (q == 0)
-				q = s[i];
-			else if (q == s[i])
-				q = 0;
-		}
-		i++;
-	}
-	return (q != 0);
-}
-
-/*
-** Return true if the last non-space, unquoted char is '|' (needs continuation).
-*/
-bool	detect_trailing_pipe(const char *s)
-{
-	bool	last_pipe;
-	char	quote;
-	int		i;
-
-	last_pipe = false;
-	quote      = 0;
-	i          = 0;
-	while (s[i] && ft_isspace((unsigned char)s[i]))
-		i++;
-	while (s[i])
-	{
-		if (s[i] == '"' || s[i] == '\'')
-		{
-			if (quote == 0)
-				quote = s[i];
-			else if (quote == s[i])
-				quote = 0;
-		}
-		else if (s[i] == '|' && quote == 0)
-			last_pipe = true;
-		else if (!ft_isspace((unsigned char)s[i]) && quote == 0)
-			last_pipe = false;
-		i++;
-	}
-	return (last_pipe);
-}
-
-/*
-** Read lines until quotes and trailing-pipe are closed, then return full buf.
-*/
-char	*read_complete_input(void)
-{
-	char	*buf;
-	char	*line;
-
-	buf = readline("CJminishell$ ");
-	if (!buf)
-		return (NULL);
-	while (detect_unclosed_quotes_silent(buf)
-		|| detect_trailing_pipe(buf))
-	{
-		line = readline("> ");
-		if (!line)
-		{
-			free(buf);
-			return (NULL);
-		}
-		buf = ft_strjoin_free(buf, "\n");
-		buf = ft_strjoin_free(buf, line);
-		free(line);
-	}
-	return (buf);
-}
-
-/*
-** Only error on consecutive unquoted pipes: "||" or "| |".
-*/
-bool	detect_consecutive_pipes(const char *s)
-{
-	bool	last_pipe;
-	char	quote;
-	int		i;
-
-	last_pipe = false;
-	quote      = 0;
-	i          = 0;
-	while (s[i])
-	{
-		if (s[i] == '"' || s[i] == '\'')
-		{
-			if (quote == 0)
-				quote = s[i];
-			else if (quote == s[i])
-				quote = 0;
-		}
-		else if (s[i] == '|' && quote == 0)
-		{
-			if (last_pipe)
-			{
-				ft_putstr_fd(
-			"CJminishell: syntax error near unexpected token `|'\n", 2);
+			if (process_redirection(s, &i))
 				return (true);
-			}
-			last_pipe = true;
 		}
-		else if (!ft_isspace((unsigned char)s[i]) && quote == 0)
-			last_pipe = false;
+		else
+			i++;
+	}
+	return (false);
+}
+
+bool	is_only_whitespace(const char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (!ft_isspace((unsigned char)s[i]))
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
+bool	detect_invalid_metachar(const char *s)
+{
+	const char	*bad = "\\;&(){}[]`";
+	char		q;
+	int			i;
+
+	q = 0;
+	i = 0;
+	while (s[i])
+	{
+		q = update_quote(q, s[i]);
+		if (q == 0 && ft_strchr(bad, s[i]))
+		{
+			ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
+			write(2, &s[i], 1);
+			ft_putstr_fd("'\n", 2);
+			return (true);
+		}
 		i++;
 	}
 	return (false);

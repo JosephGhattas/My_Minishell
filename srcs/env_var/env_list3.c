@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 12:58:44 by jgh               #+#    #+#             */
-/*   Updated: 2025/07/25 13:01:59 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/05 01:53:49 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,14 @@
 
 char	*extract_value_part(char *env)
 {
-	int		i;
-	int		value_index;
-	char	*value_str;
+	int	i;
 
 	i = 0;
-	while (env[i] != '=')
+	while (env[i] && env[i] != '=')
 		i++;
-	value_str = malloc(sizeof(char) * (ft_strlen(env) - i + 1));
-	if (!value_str)
-		return (NULL);
-	i++;
-	value_index = i;
-	i = 0;
-	while (env[value_index])
-	{
-		value_str[i] = env[value_index];
+	if (env[i] == '=')
 		i++;
-		value_index++;
-	}
-	value_str[i] = '\0';
-	return (value_str);
+	return (ft_strdup(env + i));
 }
 
 char	*extract_key_part(char *env_var)
@@ -70,4 +57,46 @@ bool	equal(char *env)
 		i++;
 	}
 	return (false);
+}
+
+static void	free_vars(char **var, int i)
+{
+	int	j;
+
+	j = 0;
+	while (j < i)
+	{
+		free(var[j]);
+		j++;
+	}
+	free(var);
+	memory_error();
+}
+
+t_env_list	*create_default_env(void)
+{
+	char		**vars;
+	char		*cwd;
+	t_env_list	*list;
+
+	vars = malloc(sizeof(char *) * 4);
+	if (!vars)
+		memory_error();
+	cwd = NULL;
+	cwd = getcwd(cwd, 0);
+	vars[0] = ft_strjoin_free("PWD=", cwd);
+	if (!vars[0])
+		free_vars(vars, 0);
+	vars[1] = ft_strdup("SHLVL=1");
+	if (!vars[1])
+		free_vars(vars, 1);
+	vars[2] = ft_strdup("_=/usr/bin/env");
+	if (!vars[2])
+		free_vars(vars, 2);
+	vars[3] = NULL;
+	list = generate_env_list(vars);
+	free_array(vars);
+	if (!list)
+		memory_error();
+	return (list);
 }

@@ -116,7 +116,7 @@ t_ast_node	*parse_input(char *input, t_env_list *my_env)
 /*
 can be used for debugging in parse_input:
 print_tokens(token);
-printf("\n\n");
+	printf("\n\n");
 print_ast(tree, 0);
-printf("\n\n");
+	printf("\n\n");
 */

@@ -100,15 +100,14 @@ void		print_tokens(t_token *token);
 void		print_ast(t_ast_node *node, int depth);
 
 //syntax
-bool		is_only_whitespace(const char *s);
-bool		detect_unclosed_quotes_silent(const char *s);
-bool		detect_trailing_pipe(const char *s);
-char		*read_complete_input(void);
-bool		detect_consecutive_pipes(const char *s);
-bool		print_redir_error(char c);
-bool		detect_invalid_metachar(const char *s);
-bool		process_redirection(const char *s, int *i);
-bool		detect_redir_errors(const char *s);
+bool	detect_syntax_errors(const char *input);
+bool	trailing_pipe(const char *s);
+bool	leading_pipe(const char *s);
+bool	detect_consecutive_pipes(const char *s);
+bool	detect_invalid_metachar(const char *s);
+bool	is_only_whitespace(const char *s);
+bool	detect_redir_errors(const char *s);
+char	update_quote (char current_quote, char c);
 
 //signals
 void		sig_handler_prompt(int sig);
@@ -121,7 +120,7 @@ void		init(int argc, char **argv, t_env_list **env_list, char **env);
 void		cheaking_env(t_env_list **env_list, char **env);
 void		memory_error(void);
 void		check_shell_number(int *shell_number);
-void		new_node_filling(t_env_list **new_node, t_env_list **head);
+void		new_node_filling(t_env_list *new_node, t_env_list *head);
 t_env_list	*add_shell_level(t_env_list *env_list);
 char		*extract_value_part(char *env);
 char		*extract_key_part(char *env_var);
@@ -242,7 +241,7 @@ int			my_echo(int argc, char**argv);
 
 int			my_exit(int argc, char **argv);
 
-//cleanu
+//cleanup
 void		free_array(char **arr);
 void		free_env_list_full(t_env_list *env);
 void		free_tokens(t_token *tok);

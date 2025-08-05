@@ -35,7 +35,7 @@ int	main(int argc, char **argv, char **envp)
     while (1)
     {
 		setup_signals_prompt();
-		input = readline("minishell$ ");
+		input = readline("Minishell$ ");
 	    // input = read_complete_input();
 
 		if (!input)
@@ -46,13 +46,11 @@ int	main(int argc, char **argv, char **envp)
             continue;
         }
 		add_history(input);
-	    // if (detect_invalid_metachar(input)
-		// 	|| detect_redir_errors(input)
-		// 	|| detect_consecutive_pipes(input))
-        // {
-        //     free(input);
-        //     continue;
-        // }
+	    if (detect_syntax_errors(input))
+        {
+            free(input);
+            continue;
+        }
 		tree = parse_input(input, env);
 		free(input);
         if (!tree)
@@ -76,5 +74,7 @@ int	main(int argc, char **argv, char **envp)
 		}
     }
 	free_env_list_full(env);
+	rl_clear_history();
+	rl_free_line_state();
     return (0);
 }

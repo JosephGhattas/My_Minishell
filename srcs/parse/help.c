@@ -78,3 +78,21 @@ void	read_word(const char *line, size_t *i, t_token **tokens)
 	if (word)
 		add_token(tokens, new_token(TOKEN_WORD, word));
 }
+
+void	append_redir(t_redir **head, t_redir **tail, t_redir *new_redir)
+{
+	if (!*head)
+		*head = new_redir;
+	else
+		(*tail)->next = new_redir;
+	*tail = new_redir;
+}
+
+void	free_single_redir(t_redir *redir)
+{
+	if (!redir)
+		return ;
+	free(redir->filename);
+	free(redir->delimiter);
+	free(redir);
+}

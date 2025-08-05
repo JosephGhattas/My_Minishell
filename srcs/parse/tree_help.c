@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 12:47:49 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/03 19:08:16 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/05 04:12:14 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,14 +78,26 @@ t_redir	*new_redir(t_token *token, t_token *next)
 
 int	count_args(t_token *start, t_token *end)
 {
-	int	count;
+	int		count;
+	t_token	*cur;
+	t_token	*prev;
 
+	cur = start;
 	count = 0;
-	while (start && start != end->next)
+	prev = NULL;
+	while (cur && cur != end->next)
 	{
-		if (start->type == TOKEN_WORD)
-			count++;
-		start = start->next;
+		if (cur->type == TOKEN_WORD)
+		{
+			if (prev && (prev->type >= TOKEN_REDIR_IN
+					&& prev->type <= TOKEN_HEREDOC))
+			{
+			}
+			else
+				count++;
+		}
+		prev = cur;
+		cur = cur->next;
 	}
 	return (count);
 }

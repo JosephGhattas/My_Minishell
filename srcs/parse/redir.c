@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 21:31:05 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/03 22:09:54 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/05 02:37:40 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ static int	handle_redirection(t_token **cur, t_redir **head, t_redir **tail,
 	if (!process_redirections(redir, head, env))
 		return (0);
 	append_redir(head, tail, redir);
-	*cur = (*cur)->next;
 	return (1);
 }
 
@@ -103,6 +102,7 @@ t_redir	*collect_redirections(t_token *start, t_token *end, t_env_list *env)
 		{
 			if (!handle_redirection(&cur, &head, &tail, env))
 				return (NULL);
+			cur = cur->next;
 		}
 		cur = cur->next;
 	}

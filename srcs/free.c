@@ -14,27 +14,25 @@
 
 void	free_env_list_full(t_env_list *env)
 {
-	t_env_list	*current;
-	t_env_list	*next;
+	t_env_list	*tmp;
 
 	if (env == NULL)
 		return ;
-	current = env;
-	while (current != NULL)
+	while (env)
 	{
-		next = current->next;
-		if (current->name != NULL)
-			free(current->name);
-		if (current->type != NULL)
-			free(current->type);
-		if (current->heredoc_filename != NULL)
-			free(current->heredoc_filename);
-		if (current->shell_pwd != NULL)
-			free(current->shell_pwd);
-		if (current->shell_oldpwd != NULL)
-			free(current->shell_oldpwd);
-		free(current);
-		current = next;
+		tmp = env->next;
+		if (env->name != NULL)
+			free(env->name);
+		if (env->type != NULL)
+			free(env->type);
+		if (env->heredoc_filename != NULL)
+			free(env->heredoc_filename);
+		if (env->shell_pwd != NULL)
+			free(env->shell_pwd);
+		if (env->shell_oldpwd != NULL)
+			free(env->shell_oldpwd);
+		free(env);
+		env = tmp;
 	}
 }
 
@@ -64,6 +62,25 @@ void	free_array(char **arr)
 	free(arr);
 }
 
+void	free_redir_list(t_redir *head)
+{
+	t_redir	*tmp;
+
+	while (head)
+	{
+		tmp = head->next;
+		if (head->filename)
+		{
+			unlink(head->filename);
+			free(head->filename);
+		}
+		if (head->delimiter)
+			free(head->delimiter);
+		free(head);
+		head = tmp;
+	}
+}
+
 void	free_ast(t_ast_node *node)
 {
 	if (!node)
@@ -71,7 +88,7 @@ void	free_ast(t_ast_node *node)
 	if (node->type == NODE_COMMAND)
 	{
 		free_array(node->args);
-		free_redir_list(node->redirections);
+		// free_redir_list(node->redirections);
 	}
 	else
 	{
