@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	init(int argc, char **argv, t_env_list **env_list, char **env)
+static void	init(int argc, char **argv, t_env_list **env_list, char **env)
 {
 	(void)argv;
 	if (argc > 1)
@@ -20,67 +20,71 @@ void	init(int argc, char **argv, t_env_list **env_list, char **env)
 		ft_putstr_fd("ERROR: too many arguments\n", 2);
 		exit(127);
 	}
-	cheaking_env(&(*env_list), env);
-	// update_exit_status(env_list, 0);
+	cheaking_env(env_list, env);
+}
+
+int	handle_execution(t_ast_node *tree, t_env_list **env)
+{
+	int	exit_status;
+
+	if (setup_all_heredocs(tree) != 0)
+	{
+		perror("Heredoc interrupted");
+		return (130);
+	}
+	exit_status = execute_ast(tree, env);
+	update_exit_status(env, exit_status);
+	return (exit_status);
+}
+
+static int	process_input(t_env_list **env)
+{
+	char		*input;
+	t_ast_node	*tree;
+	int			exit_status;
+
+	setup_signals_prompt();
+	input = readline("Minishell$ ");
+	if (!input)
+		return (-1);
+	if (!*input || is_only_whitespace(input))
+	{
+		free(input);
+		return (0);
+	}
+	add_history(input);
+	if (detect_syntax_errors(input))
+	{
+		free(input);
+		return (0);
+	}
+	tree = parse_input(input, *env);
+	free(input);
+	if (!tree)
+		return (-1);
+	exit_status = handle_execution(tree, env);
+	return (free_ast(tree), exit_status);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_env_list *env;
-    char        *input;
-    t_ast_node   *tree;
-	int		exit_status;
-	t_redir	*redir;
+	t_env_list	*env;
+	int			status;
 
-	exit_status = 0;
 	printbanner();
-    init(argc, argv, &env, envp);
-    while (1)
-    {
-		setup_signals_prompt();
-		input = readline("Minishell$ ");
-	    // input = read_complete_input();
-
-		if (!input)
+	init(argc, argv, &env, envp);
+	while (1)
+	{
+		status = process_input(&env);
+		if (status == -1)
 			break ;
-		if (!*input || is_only_whitespace(input))
-        {
-            free(input);
-            continue;
-        }
-		add_history(input);
-	    if (detect_syntax_errors(input))
-        {
-            free(input);
-            continue;
-        }
-		tree = parse_input(input, env);
-		free(input);
-        if (!tree)
-        {
-			free_env_list_full(env);
-            exit (EXIT_FAILURE);
-        } 
-		redir = tree->redirections;
-		if (setup_all_heredocs(tree) != 0)
-		{
-			perror("Heredoc interrupted");
-			free_env_list_full(env);
-			free_ast(tree);
-			exit(EXIT_FAILURE);
-		}
-		exit_status = execute_ast(tree, &env);
-		update_exit_status(&env, exit_status);
-		free_ast(tree);
-        if (g_sig != 0)
+		if (g_sig != 0)
 		{
 			env->exit_status = 128 + g_sig;
 			g_sig = 0;
 		}
-    }
-	free_redir_list(redir);
+	}
 	free_env_list_full(env);
 	rl_clear_history();
-	rl_free_line_state();
-    return (0);
+	return (0);
 }
