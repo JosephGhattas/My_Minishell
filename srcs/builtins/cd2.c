@@ -68,7 +68,7 @@ void	update_env_var(t_env_list **env, char *key, char *value)
 		free(joined);
 		if (!node)
 			return ;
-		append_env_node(env, &node);
+		append_env_node_cd(env, &node);
 	}
 }
 
