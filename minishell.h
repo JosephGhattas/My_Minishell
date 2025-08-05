@@ -100,14 +100,14 @@ void		print_tokens(t_token *token);
 void		print_ast(t_ast_node *node, int depth);
 
 //syntax
-bool	detect_syntax_errors(const char *input);
-bool	trailing_pipe(const char *s);
-bool	leading_pipe(const char *s);
-bool	detect_consecutive_pipes(const char *s);
-bool	detect_invalid_metachar(const char *s);
-bool	is_only_whitespace(const char *s);
-bool	detect_redir_errors(const char *s);
-char	update_quote (char current_quote, char c);
+bool		detect_syntax_errors(const char *input);
+bool		trailing_pipe(const char *s);
+bool		leading_pipe(const char *s);
+bool		detect_consecutive_pipes(const char *s);
+bool		detect_invalid_metachar(const char *s);
+bool		is_only_whitespace(const char *s);
+bool		detect_redir_errors(const char *s);
+char		update_quote(char current_quote, char c);
 
 //signals
 void		sig_handler_prompt(int sig);

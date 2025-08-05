@@ -50,6 +50,5 @@ int	my_exit(int argc, char **argv, t_env_list **env)
 	}
 	else
 		code = ft_atoi(argv[1]);
-	// exit(code);
-	return (code);
+	exit(code);
 }
