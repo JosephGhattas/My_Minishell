@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 09:17:57 by jgh               #+#    #+#             */
-/*   Updated: 2025/07/31 11:16:47 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/05 09:39:59 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	my_cd_change_dir(int argc, char **argv,
 	return (ret);
 }
 
-int	my_cd(int argc, char **argv, t_env_list *env)
+int	my_cd(int argc, char **argv, t_env_list **env)
 {
 	char	*oldpwd;
 	char	*cwd;
@@ -85,7 +85,7 @@ int	my_cd(int argc, char **argv, t_env_list *env)
 
 	if (!env)
 		return (1);
-	ret = my_cd_change_dir(argc, argv, &env, &oldpwd);
+	ret = my_cd_change_dir(argc, argv, env, &oldpwd);
 	if (ret == -1)
 		return (1);
 	if (ret != 0)
@@ -97,8 +97,8 @@ int	my_cd(int argc, char **argv, t_env_list *env)
 		perror("cd");
 		return (1);
 	}
-	update_env_var(&env, "OLDPWD", oldpwd);
-	update_env_var(&env, "PWD", cwd);
+	update_env_var(env, "OLDPWD", oldpwd);
+	update_env_var(env, "PWD", cwd);
 	free(oldpwd);
 	free(cwd);
 	return (0);

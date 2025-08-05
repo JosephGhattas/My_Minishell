@@ -6,13 +6,13 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 10:18:39 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/04 21:06:07 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/05 09:24:46 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	left_pipe(t_ast_node *node, t_env_list *env, int *fd, pid_t *left_pid)
+int	left_pipe(t_ast_node *node, t_env_list **env, int *fd, pid_t *left_pid)
 {
 	*left_pid = fork();
 	if (*left_pid == -1)
@@ -35,7 +35,7 @@ int	left_pipe(t_ast_node *node, t_env_list *env, int *fd, pid_t *left_pid)
 	return (0);
 }
 
-int	right_pipe(t_ast_node *node, t_env_list *env, int *fd, pid_t *right_pid)
+int	right_pipe(t_ast_node *node, t_env_list **env, int *fd, pid_t *right_pid)
 {
 	*right_pid = fork();
 	if (*right_pid == -1)
@@ -58,7 +58,7 @@ int	right_pipe(t_ast_node *node, t_env_list *env, int *fd, pid_t *right_pid)
 	return (0);
 }
 
-int	execute_pipe(t_ast_node *node, t_env_list *env)
+int	execute_pipe(t_ast_node *node, t_env_list **env)
 {
 	int		fd[2];
 	pid_t	pids[2];
@@ -87,7 +87,7 @@ int	execute_pipe(t_ast_node *node, t_env_list *env)
 	return (1);
 }
 
-int	execute_ast(t_ast_node *node, t_env_list *env)
+int	execute_ast(t_ast_node *node, t_env_list **env)
 {
 	if (!node)
 		return (1);

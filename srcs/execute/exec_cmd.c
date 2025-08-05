@@ -6,13 +6,13 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 20:54:16 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/04 21:05:01 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/05 09:52:31 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static int	execute_builtin(t_ast_node *cmd, t_env_list *env)
+static int	execute_builtin(t_ast_node *cmd, t_env_list **env)
 {
 	int	saved_stdin;
 	int	saved_stdout;
@@ -74,12 +74,12 @@ static int	execute_external(t_ast_node *cmd, t_env_list *env)
 	return (WEXITSTATUS(status));
 }
 
-int	execute_command_node(t_ast_node *cmd, t_env_list *env)
+int	execute_command_node(t_ast_node *cmd, t_env_list **env)
 {
 	if (!cmd || !cmd->argc || !cmd->args[0])
 		return (1);
 	if (is_builtin(cmd->args[0]))
 		return (execute_builtin(cmd, env));
 	else
-		return (execute_external(cmd, env));
+		return (execute_external(cmd, *env));
 }

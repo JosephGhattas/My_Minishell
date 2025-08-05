@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-int	my_env(int argc, char **argv, t_env_list *env)
+int	my_env(int argc, char **argv, t_env_list **env)
 {
 	t_env_list	*cur;
 
@@ -22,7 +22,7 @@ int	my_env(int argc, char **argv, t_env_list *env)
 		printf("env: too many arguments\n");
 		return (1);
 	}
-	cur = env;
+	cur = *env;
 	while (cur)
 	{
 		if (cur->equal)

@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 22:59:04 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/03 22:31:29 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/05 09:43:49 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ t_env_list	*find_env_node(t_env_list *env, char *key)
 	return (NULL);
 }
 
-int	my_pwd(t_env_list *env)
+int	my_pwd(t_env_list **env)
 {
 	t_env_list	*pwd_node;
 	char		*cwd;
 
-	pwd_node = find_env_node(env, "PWD");
+	pwd_node = find_env_node(*env, "PWD");
 	if (pwd_node && pwd_node->name)
 	{
 		printf("%s\n", pwd_node->name);

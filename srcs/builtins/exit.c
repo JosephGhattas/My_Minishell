@@ -31,23 +31,25 @@ int	is_numeric(const char *s)
 	return (1);
 }
 
-int	my_exit(int argc, char **argv)
+int	my_exit(int argc, char **argv, t_env_list **env)
 {
 	int	code;
 
 	printf("exit\n");
 	if (argc == 1)
-		exit(0);
-	if (!is_numeric(argv[1]))
+		exit(get_exit_status(*env));
+	else if (!is_numeric(argv[1]))
 	{
-		printf("exit: %s: numeric argument required\n", argv[1]);
-		exit(2);
+		printf("Minishell: exit: %s: numeric argument required\n", argv[1]);
+		code = 2;
 	}
-	if (argc > 2)
+	else if (argc > 2)
 	{
-		printf("exit: too many arguments\n");
+		printf("Minishell: exit: too many arguments\n");
 		return (1);
 	}
-	code = ft_atoi(argv[1]);
-	exit(code);
+	else
+		code = ft_atoi(argv[1]);
+	// exit(code);
+	return (code);
 }

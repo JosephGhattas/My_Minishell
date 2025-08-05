@@ -29,7 +29,9 @@ int	main(int argc, char **argv, char **envp)
 	t_env_list *env;
     char        *input;
     t_ast_node   *tree;
+	int		exit_status;
 
+	exit_status = 0;
 	printbanner();
     init(argc, argv, &env, envp);
     while (1)
@@ -65,7 +67,8 @@ int	main(int argc, char **argv, char **envp)
 			free_ast(tree);
 			exit(EXIT_FAILURE);
 		}
-		execute_ast(tree, env);
+		exit_status = execute_ast(tree, &env);
+		update_exit_status(&env, exit_status);
 		free_ast(tree);
         if (g_sig != 0)
 		{

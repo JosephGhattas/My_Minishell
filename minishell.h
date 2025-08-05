@@ -175,11 +175,11 @@ t_ast_node	*pipe_node(t_token *start, t_token *end,
 
 //execute
 
-int			execute_ast(t_ast_node *node, t_env_list *env);
-int			execute_pipe(t_ast_node *node, t_env_list *env);
-int			execute_command_node(t_ast_node *cmd, t_env_list *env);
+int			execute_ast(t_ast_node *node, t_env_list **env);
+int			execute_pipe(t_ast_node *node, t_env_list **env);
+int			execute_command_node(t_ast_node *cmd, t_env_list **env);
 int			is_builtin(char *cmd);
-int			run_builtin(int argc, char **argv, t_env_list *envp);
+int			run_builtin(int argc, char **argv, t_env_list **envp);
 
 //herdocs handling
 char		*generate_heredoc_filename(void);
@@ -204,7 +204,7 @@ char		*my_getenv(char *name, char **envp);
 //pwd
 char		*safe_getcwd(void);
 t_env_list	*find_env_node(t_env_list *env, char *key);
-int			my_pwd(t_env_list *env);
+int			my_pwd(t_env_list **env);
 
 //cd
 char		*ft_strjoin3(char *s1, char *s2, char *s3);
@@ -216,7 +216,7 @@ int			cd_to_oldpwd(t_env_list *env);
 char		*cd_handle_path(int argc, char **argv, t_env_list *env);
 int			my_cd_change_dir(int argc, char **argv,
 				t_env_list **env, char **oldpwd);
-int			my_cd(int argc, char **argv, t_env_list *env);
+int			my_cd(int argc, char **argv, t_env_list **env);
 
 //export
 int			is_valid_identifier(const char *str);
@@ -236,10 +236,10 @@ int			process_arg(t_env_list **env, char *arg);
 void		remove_env_var(t_env_list **env, const char *key);
 int			my_unset(int argc, char **argv, t_env_list **env);
 //
-int			my_env(int argc, char **argv, t_env_list *env);
+int			my_env(int argc, char **argv, t_env_list **env);
 int			my_echo(int argc, char**argv);
 
-int			my_exit(int argc, char **argv);
+int			my_exit(int argc, char **argv, t_env_list **env);
 
 //cleanup
 void		free_array(char **arr);
