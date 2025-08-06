@@ -81,7 +81,10 @@ int	main(int argc, char **argv, char **envp)
 		}
 		status = process_input(&env);
 		if (status == -1)
+		{
+			update_exit_status(&env, 0);
 			break ;
+		}
 	}
 	free_env_list_full(env);
 	rl_clear_history();

@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:28 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/06 10:10:39 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/06 11:05:26 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static void	child_process(t_ast_node *cmd, t_env_list *env)
 	free(path);
 	free_array(envp);
 	perror("execve");
-	exit(126);
+	exit(127);
 }
 
 static int	execute_external(t_ast_node *cmd, t_env_list *env)

@@ -71,7 +71,8 @@ void	free_redir_list(t_redir *head)
 		tmp = head->next;
 		if (head->filename)
 		{
-			unlink(head->filename);
+			if (head->type == TOKEN_HEREDOC)
+				unlink(head->filename);
 			free(head->filename);
 		}
 		if (head->delimiter)
@@ -88,6 +89,7 @@ void	free_ast(t_ast_node *node)
 	if (node->type == NODE_COMMAND)
 	{
 		free_array(node->args);
+		free_redir_list(node->redirections);
 	}
 	else
 	{
