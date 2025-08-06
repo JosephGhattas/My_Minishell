@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:27:32 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:27:34 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/06 09:04:04 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,10 @@ int	handle_no_equal(t_env_list **env, const char *arg)
 
 	existing = find_env_var_export(*env, arg);
 	if (existing)
-		existing->equal = true;
+		return (0);
 	else
 		append_env_node_export(env,
 			create_env_node_export(ft_strdup((char *)arg),
-				ft_strdup(""), true));
+				NULL, false));
 	return (0);
 }

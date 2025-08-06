@@ -12,6 +12,16 @@
 
 #include "../../minishell.h"
 
+static int	count_tmp(t_env_list *tmp)
+{
+	int			count;
+
+	count = 0;
+	while (tmp && ++count)
+		tmp = tmp->next;
+	return (count);
+}
+
 void	print_sorted_env(t_env_list *env)
 {
 	t_env_list	**arr;
@@ -19,10 +29,10 @@ void	print_sorted_env(t_env_list *env)
 	int			count;
 	int			i;
 
-	count = 0;
 	tmp = env;
-	while (tmp && ++count)
-		tmp = tmp->next;
+	count = count_tmp(tmp);
+	if (count == 0)
+		return ;
 	arr = malloc(count * sizeof(t_env_list *));
 	if (!arr)
 		return ;

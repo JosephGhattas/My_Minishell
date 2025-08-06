@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export3.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:27:37 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:27:39 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/06 08:05:08 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ int	handle_with_equal(t_env_list **env, const char *arg, char *eq)
 	existing = find_env_var_export(*env, key);
 	if (existing)
 	{
-		free(existing->name);
+		if (existing->name)
+			free(existing->name);
 		existing->name = val;
 		existing->equal = true;
 		free(key);
