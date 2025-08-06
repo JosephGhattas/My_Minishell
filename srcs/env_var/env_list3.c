@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:15 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:28:18 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/06 19:17:11 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,18 +73,24 @@ static void	free_vars(char **var, int i)
 	memory_error();
 }
 
-t_env_list	*create_default_env(void)
+static char **init_def_var(void)
 {
-	char		**vars;
 	char		*cwd;
-	t_env_list	*list;
+	char		**vars;
 
 	vars = malloc(sizeof(char *) * 4);
 	if (!vars)
 		memory_error();
-	cwd = NULL;
-	cwd = getcwd(cwd, 0);
-	vars[0] = ft_strjoin_free("PWD=", cwd);
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+    	perror("getcwd");
+    	cwd = ft_strdup("/");
+    	if (!cwd)
+    	    free_vars(vars, 0);
+	}
+	vars[0] = ft_strjoin("PWD=", cwd);
+	free(cwd);
 	if (!vars[0])
 		free_vars(vars, 0);
 	vars[1] = ft_strdup("SHLVL=1");
@@ -93,6 +99,15 @@ t_env_list	*create_default_env(void)
 	vars[2] = ft_strdup("_=/usr/bin/env");
 	if (!vars[2])
 		free_vars(vars, 2);
+	return (vars);
+}
+
+t_env_list	*create_default_env(void)
+{
+	char		**vars;
+	t_env_list	*list;
+
+	vars = init_def_var();
 	vars[3] = NULL;
 	list = generate_env_list(vars);
 	free_array(vars);

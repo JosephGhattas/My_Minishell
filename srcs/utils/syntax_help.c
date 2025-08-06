@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_help.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 23:47:11 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/05 03:23:16 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/06 18:09:59 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,11 @@ bool	detect_redir_errors(const char *s)
 		temp = q;
 		q = update_quote(q, s[i]);
 		if (q != temp)
+		{
 			i++;
+			if (s[i] == '\0')
+				break ;
+		}
 		if (q == 0 && (s[i] == '<' || s[i] == '>'
 				|| (ft_isdigit((unsigned char)s[i])
 					&& s[i + 1] != '\0'

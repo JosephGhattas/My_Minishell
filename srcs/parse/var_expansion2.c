@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:29:51 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/06 15:21:37 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/06 19:28:33 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ char	*expand_token_value(const char *input, t_env_list *env)
 		{
 		}
 		else if (input[i] == '$' && quote != '\''
-			&& input[i + 1] != '\0' && input[i + 1] != '"')
+			&& input[i + 1] != '\0' && input[i + 1] != '"'
+			&& input[i + 1] != ' ')
 		{
 			result = ft_strjoin_free(result, expand_var(input, &i, env));
 		}
