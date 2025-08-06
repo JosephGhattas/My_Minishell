@@ -1,0 +1,38 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pwd_echo.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 11:41:25 by jghattas          #+#    #+#             */
+/*   Updated: 2025/05/08 13:39:07 by jghattas         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../minishell.h"
+
+int	my_echo(int argc, char**argv)
+{
+	int	no_line;
+	int	i;
+
+	no_line = 0;
+	i = 1;
+	if (argc > 1 && ft_strcmp(argv[1], "-n") == 0)
+	{
+		no_line = 1;
+		argc--;
+		argv++;
+	}
+	while (i < argc)
+	{
+		printf("%s", argv[i]);
+		i++;
+		if (i < argc)
+			printf(" ");
+	}
+	if (no_line == 0)
+		printf("\n");
+	return (0);
+}
