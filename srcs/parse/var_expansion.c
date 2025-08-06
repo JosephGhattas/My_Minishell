@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_expansion.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:29:45 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:29:46 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/06 07:42:41 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@ char	*get_special_var(char c, t_env_list *env)
 			return (ft_strdup("0"));
 	}
 	if (c == '$')
-		return (ft_itoa(getpid()));
-	return (ft_strdup(""));
+		return (ft_strdup("$"));
+	else
+		return (ft_strdup("$"));
 }
 
 char	*get_var_name(const char *s, int *len)

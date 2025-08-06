@@ -116,7 +116,7 @@ void		setup_signals_prompt(void);
 void		setup_signals_exec(void);
 
 //env_list
-void		init(int argc, char **argv, t_env_list **env_list, char **env);
+//void		init(int argc, char **argv, t_env_list **env_list, char **env);
 void		cheaking_env(t_env_list **env_list, char **env);
 void		memory_error(void);
 void		check_shell_number(int *shell_number);

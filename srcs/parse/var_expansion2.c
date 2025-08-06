@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_expansion2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:29:51 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:29:53 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/06 07:50:23 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ char	*expand_token_value(const char *input, t_env_list *env)
 	char	*result;
 	char	quote;
 	int		i;
-	char	*val;
 
 	result = ft_strdup("");
 	quote = 0;
@@ -60,10 +59,10 @@ char	*expand_token_value(const char *input, t_env_list *env)
 		if (quoted(input, &i, &quote))
 		{
 		}
-		else if (input[i] == '$' && quote != '\'')
+		else if (input[i] == '$' && quote != '\''
+			&& input[i + 1] != '\0' && input[i + 1] != '"')
 		{
-			val = expand_var(input, &i, env);
-			result = ft_strjoin_free(result, val);
+			result = ft_strjoin_free(result, expand_var(input, &i, env));
 		}
 		else
 		{
