@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:28 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:28:29 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/06 10:10:39 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,17 +61,27 @@ static int	execute_external(t_ast_node *cmd, t_env_list *env)
 {
 	pid_t	pid;
 	int		status;
+	void	(*old_sigint)(int);
+	void	(*old_sigquit)(int);
 
+	old_sigint = signal(SIGINT, SIG_IGN);
+	old_sigquit = signal(SIGQUIT, SIG_IGN);
 	pid = fork();
 	if (pid < 0)
 	{
 		perror("fork");
+		signal(SIGINT, old_sigint);
+		signal(SIGQUIT, old_sigquit);
 		return (1);
 	}
 	if (pid == 0)
 		child_process(cmd, env);
 	waitpid(pid, &status, 0);
-	return (WEXITSTATUS(status));
+	signal(SIGINT, old_sigint);
+	signal(SIGQUIT, old_sigquit);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (1);
 }
 
 int	execute_command_node(t_ast_node *cmd, t_env_list **env)

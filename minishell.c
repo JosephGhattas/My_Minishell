@@ -48,16 +48,15 @@ static int	process_input(t_env_list **env)
 	if (!input)
 		return (-1);
 	if (!*input || is_only_whitespace(input))
+		return (free(input), 0);
+	if (g_sig != 0)
 	{
-		free(input);
-		return (0);
+		update_exit_status(env, 128 + g_sig);
+		g_sig = 0;
 	}
 	add_history(input);
 	if (detect_syntax_errors(input))
-	{
-		free(input);
-		return (0);
-	}
+		return (free(input), 0);
 	tree = parse_input(input, *env);
 	free(input);
 	if (!tree)
@@ -75,14 +74,14 @@ int	main(int argc, char **argv, char **envp)
 	init(argc, argv, &env, envp);
 	while (1)
 	{
+		if (g_sig != 0)
+		{
+			update_exit_status(&env, 128 + g_sig);
+			g_sig = 0;
+		}
 		status = process_input(&env);
 		if (status == -1)
 			break ;
-		if (g_sig != 0)
-		{
-			env->exit_status = 128 + g_sig;
-			g_sig = 0;
-		}
 	}
 	free_env_list_full(env);
 	rl_clear_history();

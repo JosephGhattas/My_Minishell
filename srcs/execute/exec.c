@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:58 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:29:00 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/06 10:33:58 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,9 @@ int	right_pipe(t_ast_node *node, t_env_list **env, int *fd, pid_t *right_pid)
 	return (0);
 }
 
-int	execute_pipe(t_ast_node *node, t_env_list **env)
+static int	start_pipe_children(t_ast_node *node, t_env_list **env,
+									int *fd, pid_t *pids)
 {
-	int		fd[2];
-	pid_t	pids[2];
-	int		status;
-
 	if (pipe(fd) == -1)
 		return (perror("pipe"), 1);
 	if (left_pipe(node, env, fd, &pids[0]) == -1)
@@ -78,8 +75,25 @@ int	execute_pipe(t_ast_node *node, t_env_list **env)
 	}
 	close(fd[0]);
 	close(fd[1]);
+	return (0);
+}
+
+int	execute_pipe(t_ast_node *node, t_env_list **env)
+{
+	int		fd[2];
+	pid_t	pids[2];
+	int		status;
+	void	(*old_sigint)(int);
+	void	(*old_sigquit)(int);
+
+	old_sigint = signal(SIGINT, SIG_IGN);
+	old_sigquit = signal(SIGQUIT, SIG_IGN);
+	if (start_pipe_children(node, env, fd, pids) == 1)
+		return (signal(SIGINT, old_sigint), signal(SIGQUIT, old_sigquit), 1);
 	waitpid(pids[0], NULL, 0);
 	waitpid(pids[1], &status, 0);
+	signal(SIGINT, old_sigint);
+	signal(SIGQUIT, old_sigquit);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
