@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:29:02 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:29:04 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/06 15:35:11 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,12 @@ char	*generate_heredoc_filename(void)
 	return (name);
 }
 
-int	fd_failed(t_redir	*redir)
+int	fd_failed(t_redir	*redir, bool open)
 {
 	free(redir->filename);
 	redir->filename = NULL;
-	perror("open");
+	if (open)
+		perror("open");
 	return (-1);
 }
 
@@ -49,19 +50,23 @@ int	create_heredoc_file(t_redir *redir)
 		return (-1);
 	fd = open(redir->filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
 	if (fd == -1)
-		return (fd_failed(redir));
+		return (fd_failed(redir, true));
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || ft_strcmp(line, redir->delimiter) == 0)
+		if (!line)
+		{
+			close(fd);
+			unlink(redir->filename);
+			return (fd_failed(redir, false));
+		}
+		if (ft_strcmp(line, redir->delimiter) == 0)
 			break ;
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
 		free(line);
 	}
-	free(line);
-	close(fd);
-	return (0);
+	return (free(line), close(fd), 0);
 }
 
 int	setup_heredocs(t_redir *list)
