@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_list3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:15 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/06 19:17:11 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/10 18:01:22 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static void	free_vars(char **var, int i)
 	memory_error();
 }
 
-static char **init_def_var(void)
+static char	**init_def_var(void)
 {
 	char		*cwd;
 	char		**vars;
@@ -84,10 +84,10 @@ static char **init_def_var(void)
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
-    	perror("getcwd");
-    	cwd = ft_strdup("/");
-    	if (!cwd)
-    	    free_vars(vars, 0);
+		perror("getcwd");
+		cwd = ft_strdup("/");
+		if (!cwd)
+			free_vars(vars, 0);
 	}
 	vars[0] = ft_strjoin("PWD=", cwd);
 	free(cwd);

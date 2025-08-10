@@ -27,7 +27,7 @@ int	handle_execution(t_ast_node *tree, t_env_list **env)
 {
 	int	exit_status;
 
-	if (setup_all_heredocs(tree) != 0)
+	if (setup_all_heredocs(tree, *env) != 0)
 	{
 		perror("Heredoc interrupted");
 		return (130);

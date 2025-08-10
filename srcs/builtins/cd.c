@@ -3,29 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:27:21 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:27:23 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/10 19:22:13 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-int	cd_to_target(char *target)
-{
-	if (!target)
-	{
-		printf("cd: HOME not set\n");
-		return (1);
-	}
-	if (chdir(target) == -1)
-	{
-		perror("cd");
-		return (1);
-	}
-	return (0);
-}
 
 int	cd_to_oldpwd(t_env_list *env)
 {
@@ -77,19 +62,20 @@ int	my_cd_change_dir(int argc, char **argv,
 	return (ret);
 }
 
-int	my_cd(int argc, char **argv, t_env_list **env)
+static int	handle_too_many_args(int argc)
 {
-	char	*oldpwd;
-	char	*cwd;
-	int		ret;
+	if (argc > 2)
+	{
+		write(2, "minishell: exit: too many arguments\n", 36);
+		return (1);
+	}
+	return (0);
+}
 
-	if (!env)
-		return (1);
-	ret = my_cd_change_dir(argc, argv, env, &oldpwd);
-	if (ret == -1)
-		return (1);
-	if (ret != 0)
-		return (free(oldpwd), ret);
+static int	update_pwd_env(t_env_list **env, char *oldpwd)
+{
+	char	*cwd;
+
 	cwd = safe_getcwd();
 	if (!cwd)
 	{
@@ -99,7 +85,23 @@ int	my_cd(int argc, char **argv, t_env_list **env)
 	}
 	update_env_var(env, "OLDPWD", oldpwd);
 	update_env_var(env, "PWD", cwd);
-	free(oldpwd);
 	free(cwd);
 	return (0);
+}
+
+int	my_cd(int argc, char **argv, t_env_list **env)
+{
+	char	*oldpwd;
+	int		ret;
+
+	if (handle_too_many_args(argc))
+		return (1);
+	if (!env)
+		return (1);
+	ret = my_cd_change_dir(argc, argv, env, &oldpwd);
+	if (ret == -1)
+		return (1);
+	if (ret != 0)
+		return (free(oldpwd), ret);
+	return (update_pwd_env(env, oldpwd));
 }

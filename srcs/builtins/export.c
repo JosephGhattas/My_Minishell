@@ -64,7 +64,9 @@ int	process_arg(t_env_list **env, char *arg)
 		return (1);
 	if (!is_valid_identifier(key))
 	{
-		printf("export: `%s': not a valid identifier\n", arg);
+		write(2, "minishell: export: `", 21);
+		write(2, arg, ft_strlen(arg));
+		write(2, "': not a valid identifier\n", 27);
 		free(key);
 		return (0);
 	}

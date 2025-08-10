@@ -26,6 +26,7 @@
 # include <stdbool.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <errno.h>
 
 //global signals variable//
 extern volatile sig_atomic_t	g_sig;
@@ -132,6 +133,7 @@ t_env_list	*generate_env_list(char **env);
 t_env_list	*create_default_env(void);
 
 //var expansion
+char	*expand_var(const char *input, int *i, t_env_list *env);
 char		*get_special_var(char c, t_env_list *env);
 char		*get_var_name(const char *s, int *len);
 char		*get_env_value_exp(const char *key, t_env_list *env);
@@ -183,9 +185,9 @@ int			run_builtin(int argc, char **argv, t_env_list **envp);
 
 //herdocs handling
 char		*generate_heredoc_filename(void);
-int			create_heredoc_file(t_redir *redir);
-int			setup_heredocs(t_redir *list);
-int			setup_all_heredocs(t_ast_node *node);
+int			create_heredoc_file(t_redir *redir, t_env_list *env);
+int			setup_heredocs(t_redir *list, t_env_list *env);
+int			setup_all_heredocs(t_ast_node *node, t_env_list *env);
 
 //redirections
 int			setup_redirections(t_redir *redir);

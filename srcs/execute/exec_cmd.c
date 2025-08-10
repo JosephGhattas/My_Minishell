@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:28 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/06 15:21:01 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/10 19:38:43 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,30 @@ static int	execute_builtin(t_ast_node *cmd, t_env_list **env)
 	return (status);
 }
 
+void handle_execve_error(char *cmd)
+{
+    if (errno == EACCES || errno == EPERM || errno == EISDIR || 
+        errno == ENOEXEC || errno == ETXTBSY)
+		{
+        perror(cmd);
+        free(cmd);
+        exit(126);
+    }
+    else if (errno == ENOENT || errno == ENOTDIR)
+	{
+        ft_putstr_fd(cmd, STDERR_FILENO);
+        ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+        free(cmd);
+        exit(127);
+    }
+    else
+	{
+        perror(cmd);
+        free(cmd);
+        exit(127);
+    }
+}
+
 static void	child_process(t_ast_node *cmd, t_env_list *env)
 {
 	char	**envp;
@@ -46,15 +70,15 @@ static void	child_process(t_ast_node *cmd, t_env_list *env)
 	path = find_path(cmd->args[0], envp);
 	if (!path)
 	{
+		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+        ft_putstr_fd(": command not found\n", STDERR_FILENO);
 		free_array(envp);
 		exit(127);
 	}
 	setup_signals_exec();
 	execve(path, cmd->args, envp);
-	free(path);
 	free_array(envp);
-	perror("execve");
-	exit(127);
+	handle_execve_error(path);
 }
 
 static int	execute_external(t_ast_node *cmd, t_env_list *env)

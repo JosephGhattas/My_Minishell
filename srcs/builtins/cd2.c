@@ -81,3 +81,18 @@ char	*get_env_value(t_env_list *env, char *key)
 		return (node->name);
 	return (NULL);
 }
+
+int	cd_to_target(char *target)
+{
+	if (!target)
+	{
+		printf("cd: HOME not set\n");
+		return (1);
+	}
+	if (chdir(target) == -1)
+	{
+		perror("cd");
+		return (1);
+	}
+	return (0);
+}

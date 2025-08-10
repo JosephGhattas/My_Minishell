@@ -43,9 +43,6 @@ int	run_builtin(int argc, char **argv, t_env_list **envp)
 	else if (!ft_strcmp(argv[0], "env"))
 		return (my_env(argc, argv, envp));
 	else if (!ft_strcmp(argv[0], "exit"))
-	{
-		my_exit(argc, argv, envp);
-		return (0);
-	}
+		return (my_exit(argc, argv, envp));
 	return (1);
 }

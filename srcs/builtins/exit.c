@@ -40,12 +40,14 @@ int	my_exit(int argc, char **argv, t_env_list **env)
 		exit(get_exit_status(*env));
 	else if (!is_numeric(argv[1]))
 	{
-		printf("Minishell: exit: %s: numeric argument required\n", argv[1]);
+		write(2, "minishell: exit: ", 17);
+		write(2, argv[1], ft_strlen(argv[1]));
+		write(2, ": numeric argument required\n", 28);
 		code = 2;
 	}
 	else if (argc > 2)
 	{
-		printf("Minishell: exit: too many arguments\n");
+		write(2, "minishell: exit: too many arguments\n", 36);
 		return (1);
 	}
 	else
