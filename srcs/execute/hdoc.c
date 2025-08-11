@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:29:02 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/10 17:58:16 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/11 23:35:12 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ static char	*expand_heredoc_line(const char *input, t_env_list *env)
 				new_result = ft_strjoin(result, temp);
 				free(result);
 				free(temp);
+				if (!new_result)
+					return (NULL);
 				result = new_result;
 				i++;
 			}
@@ -153,6 +155,7 @@ int	create_heredoc_file(t_redir *redir, t_env_list *env)
 		}
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
+		free(line);
 	}
 	return (close(fd), 0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tree_help.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:29:34 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:29:35 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/11 23:42:54 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ t_redir	*new_redir(t_token *token, t_token *next)
 	redir->filename = NULL;
 	redir->delimiter = NULL;
 	redir->next = NULL;
+	redir->heredoc_quoted = false;
 	if (redir->is_heredoc && next)
 	{
 		redir->delimiter = ft_strdup(next->value);

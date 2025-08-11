@@ -181,7 +181,7 @@ int			execute_ast(t_ast_node *node, t_env_list **env);
 int			execute_pipe(t_ast_node *node, t_env_list **env);
 int			execute_command_node(t_ast_node *cmd, t_env_list **env);
 int			is_builtin(char *cmd);
-int			run_builtin(int argc, char **argv, t_env_list **envp);
+int			run_builtin(t_ast_node *cmd, int argc, char **argv, t_env_list **envp);
 
 //herdocs handling
 char		*generate_heredoc_filename(void);
@@ -241,7 +241,7 @@ int			my_unset(int argc, char **argv, t_env_list **env);
 int			my_env(int argc, char **argv, t_env_list **env);
 int			my_echo(int argc, char**argv);
 
-int			my_exit(int argc, char **argv, t_env_list **env);
+int			my_exit(t_ast_node *cmd, int argc, char **argv, t_env_list **env);
 
 //cleanup
 void		free_array(char **arr);
@@ -266,4 +266,5 @@ char		*ft_strndup(char *src, unsigned int n);
 # define C       "\x1b[36m" 
 # define M		 "\x1b[35m"
 //============================================
+
 #endif

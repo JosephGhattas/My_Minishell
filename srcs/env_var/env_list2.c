@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_list2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:11 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:28:12 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/11 22:01:07 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,5 @@ t_env_list	*add_shell_level(t_env_list *env_list)
 	new_node_filling(new_node, head);
 	if (head)
 		head->prev = new_node;
-	return (head);
+	return (new_node);
 }

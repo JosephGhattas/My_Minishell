@@ -18,6 +18,8 @@ void	free_env_list_full(t_env_list *env)
 
 	if (env == NULL)
 		return ;
+	while (env->prev)
+		env = env->prev;
 	while (env)
 	{
 		tmp = env->next;

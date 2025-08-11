@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:28 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/10 19:38:43 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/11 22:12:31 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	execute_builtin(t_ast_node *cmd, t_env_list **env)
 	if (setup_redirections(cmd->redirections) != 0)
 		status = 1;
 	else
-		status = run_builtin(cmd->argc, cmd->args, env);
+		status = run_builtin(cmd, cmd->argc, cmd->args, env);
 	dup2(saved_stdin, STDIN_FILENO);
 	dup2(saved_stdout, STDOUT_FILENO);
 	close(saved_stdin);

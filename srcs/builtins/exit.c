@@ -31,13 +31,19 @@ int	is_numeric(const char *s)
 	return (1);
 }
 
-int	my_exit(int argc, char **argv, t_env_list **env)
+int	my_exit(t_ast_node *cmd, int argc, char **argv, t_env_list **env)
 {
 	int	code;
 
 	printf("exit\n");
+	if (argc > 2)
+	{
+		write(2, "minishell: exit: too many arguments\n", 36);
+		return (1);
+	}
+	(void)cmd;
 	if (argc == 1)
-		exit(get_exit_status(*env));
+		code = get_exit_status(*env);
 	else if (!is_numeric(argv[1]))
 	{
 		write(2, "minishell: exit: ", 17);
@@ -45,12 +51,9 @@ int	my_exit(int argc, char **argv, t_env_list **env)
 		write(2, ": numeric argument required\n", 28);
 		code = 2;
 	}
-	else if (argc > 2)
-	{
-		write(2, "minishell: exit: too many arguments\n", 36);
-		return (1);
-	}
 	else
 		code = ft_atoi(argv[1]);
+	free_ast(cmd);
+	free_env_list_full(*env);
 	exit(code);
 }

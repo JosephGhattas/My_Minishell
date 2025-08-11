@@ -25,7 +25,7 @@ int	is_builtin( char *cmd)
 		|| !ft_strcmp(cmd, "exit"));
 }
 
-int	run_builtin(int argc, char **argv, t_env_list **envp)
+int	run_builtin(t_ast_node *cmd, int argc, char **argv, t_env_list **envp)
 {
 	(void)envp;
 	if (!argv || !argv[0])
@@ -43,6 +43,6 @@ int	run_builtin(int argc, char **argv, t_env_list **envp)
 	else if (!ft_strcmp(argv[0], "env"))
 		return (my_env(argc, argv, envp));
 	else if (!ft_strcmp(argv[0], "exit"))
-		return (my_exit(argc, argv, envp));
+		return (my_exit(cmd, argc, argv, envp));
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:27:21 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/10 19:22:13 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/11 23:05:41 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int	my_cd_change_dir(int argc, char **argv,
 		target = cd_handle_path(argc, argv, *env);
 		ret = cd_to_target(target);
 	}
+	free(oldpwd);
 	return (ret);
 }
 
