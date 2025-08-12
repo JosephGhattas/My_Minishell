@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:28 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/12 10:18:07 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/12 17:43:48 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,30 +33,6 @@ static int	execute_builtin(t_ast_node *cmd, t_env_list **env)
 	return (status);
 }
 
-void	handle_execve_error(char *cmd)
-{
-	if (errno == EACCES || errno == EPERM || errno == EISDIR
-		|| errno == ENOEXEC || errno == ETXTBSY)
-	{
-		perror(cmd);
-		free(cmd);
-		exit(126);
-	}
-	else if (errno == ENOENT || errno == ENOTDIR)
-	{
-		ft_putstr_fd(cmd, STDERR_FILENO);
-		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-		free(cmd);
-		exit(127);
-	}
-	else
-	{
-		perror(cmd);
-		free(cmd);
-		exit(127);
-	}
-}
-
 static void	child_process(t_ast_node *cmd, t_env_list *env)
 {
 	char	**envp;
@@ -81,6 +57,24 @@ static void	child_process(t_ast_node *cmd, t_env_list *env)
 	handle_execve_error(path);
 }
 
+static int	get_exit_code_from_status(int status)
+{
+	int	sig;
+
+	if (WIFSIGNALED(status))
+	{
+		sig = WTERMSIG(status);
+		if (sig == SIGINT)
+			write(1, "\n", 1);
+		return (128 + sig);
+	}
+	else if (WIFEXITED(status))
+	{
+		return (WEXITSTATUS(status));
+	}
+	return (1);
+}
+
 static int	execute_external(t_ast_node *cmd, t_env_list *env)
 {
 	pid_t	pid;
@@ -103,9 +97,7 @@ static int	execute_external(t_ast_node *cmd, t_env_list *env)
 	waitpid(pid, &status, 0);
 	signal(SIGINT, old_sigint);
 	signal(SIGQUIT, old_sigquit);
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	return (1);
+	return (get_exit_code_from_status(status));
 }
 
 int	execute_command_node(t_ast_node *cmd, t_env_list **env)

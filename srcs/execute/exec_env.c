@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:32 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:28:33 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/12 17:41:45 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,4 +86,28 @@ char	**env_list_to_envp(t_env_list *env)
 	}
 	envp[i] = NULL;
 	return (envp);
+}
+
+void	handle_execve_error(char *cmd)
+{
+	if (errno == EACCES || errno == EPERM || errno == EISDIR
+		|| errno == ENOEXEC || errno == ETXTBSY)
+	{
+		perror(cmd);
+		free(cmd);
+		exit(126);
+	}
+	else if (errno == ENOENT || errno == ENOTDIR)
+	{
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		free(cmd);
+		exit(127);
+	}
+	else
+	{
+		perror(cmd);
+		free(cmd);
+		exit(127);
+	}
 }

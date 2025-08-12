@@ -69,6 +69,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_env_list	*env;
 	int			status;
+	int			last_exit_code;
 
 	printbanner();
 	init(argc, argv, &env, envp);
@@ -82,11 +83,12 @@ int	main(int argc, char **argv, char **envp)
 		status = process_input(&env);
 		if (status == -1)
 		{
-			update_exit_status(&env, 0);
+			last_exit_code = get_exit_status(env);
+			printf("exit\n");
 			break ;
 		}
 	}
 	free_env_list_full(env);
 	rl_clear_history();
-	return (0);
+	return (last_exit_code);
 }
