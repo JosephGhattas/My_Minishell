@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:29:34 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/11 23:42:54 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/12 10:52:08 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,36 +45,6 @@ t_token	*find_last_token_of_type(t_token *start, t_token *end,
 		cur = cur->prev;
 	}
 	return (NULL);
-}
-
-t_redir	*new_redir(t_token *token, t_token *next)
-{
-	t_redir	*redir;
-
-	if (!token || !next)
-		return (NULL);
-	redir = malloc(sizeof(t_redir));
-	if (!redir)
-		return (NULL);
-	redir->type = token->type;
-	redir->is_heredoc = (token->type == TOKEN_HEREDOC);
-	redir->filename = NULL;
-	redir->delimiter = NULL;
-	redir->next = NULL;
-	redir->heredoc_quoted = false;
-	if (redir->is_heredoc && next)
-	{
-		redir->delimiter = ft_strdup(next->value);
-		if (!redir->delimiter)
-			return (free(redir), NULL);
-	}
-	else if (next)
-	{
-		redir->filename = ft_strdup(next->value);
-		if (!redir->filename)
-			return (free(redir), NULL);
-	}
-	return (redir);
 }
 
 int	count_args(t_token *start, t_token *end)

@@ -6,17 +6,11 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:11 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/11 22:01:07 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/12 10:14:47 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-void	memory_error(void)
-{
-	perror("error in memory allocation");
-	exit(EXIT_FAILURE);
-}
 
 void	check_shell_number(int *shell_number)
 {

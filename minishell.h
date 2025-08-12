@@ -133,7 +133,7 @@ t_env_list	*generate_env_list(char **env);
 t_env_list	*create_default_env(void);
 
 //var expansion
-char	*expand_var(const char *input, int *i, t_env_list *env);
+char		*expand_var(const char *input, int *i, t_env_list *env);
 char		*get_special_var(char c, t_env_list *env);
 char		*get_var_name(const char *s, int *len);
 char		*get_env_value_exp(const char *key, t_env_list *env);
@@ -181,13 +181,19 @@ int			execute_ast(t_ast_node *node, t_env_list **env);
 int			execute_pipe(t_ast_node *node, t_env_list **env);
 int			execute_command_node(t_ast_node *cmd, t_env_list **env);
 int			is_builtin(char *cmd);
-int			run_builtin(t_ast_node *cmd, int argc, char **argv, t_env_list **envp);
+int			run_builtin(t_ast_node *cmd, int argc,
+				char **argv, t_env_list **envp);
 
 //herdocs handling
 char		*generate_heredoc_filename(void);
 int			create_heredoc_file(t_redir *redir, t_env_list *env);
 int			setup_heredocs(t_redir *list, t_env_list *env);
 int			setup_all_heredocs(t_ast_node *node, t_env_list *env);
+int			fd_failed(t_redir	*redir, bool open);
+char		*expand_heredoc_line(const char *input, t_env_list *env);
+char		*append_char(char *result, char c);
+char		*append_var(char *result, const char *input,
+				int *i, t_env_list *env);
 
 //redirections
 int			setup_redirections(t_redir *redir);
@@ -209,15 +215,11 @@ t_env_list	*find_env_node(t_env_list *env, char *key);
 int			my_pwd(t_env_list **env);
 
 //cd
+int			handle_too_many_args(int argc);
 char		*ft_strjoin3(char *s1, char *s2, char *s3);
 void		append_env_node_cd(t_env_list **head, t_env_list **new_node);
 void		update_env_var(t_env_list **env, char *key, char *value);
 char		*get_env_value(t_env_list *env, char *key);
-int			cd_to_target(char *target);
-int			cd_to_oldpwd(t_env_list *env);
-char		*cd_handle_path(int argc, char **argv, t_env_list *env);
-int			my_cd_change_dir(int argc, char **argv,
-				t_env_list **env, char **oldpwd);
 int			my_cd(int argc, char **argv, t_env_list **env);
 
 //export

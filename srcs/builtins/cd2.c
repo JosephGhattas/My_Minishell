@@ -82,16 +82,11 @@ char	*get_env_value(t_env_list *env, char *key)
 	return (NULL);
 }
 
-int	cd_to_target(char *target)
+int	handle_too_many_args(int argc)
 {
-	if (!target)
+	if (argc > 2)
 	{
-		printf("cd: HOME not set\n");
-		return (1);
-	}
-	if (chdir(target) == -1)
-	{
-		perror("cd");
+		ft_putstr_fd("minishell: cd: too many arguments\n", STDERR_FILENO);
 		return (1);
 	}
 	return (0);

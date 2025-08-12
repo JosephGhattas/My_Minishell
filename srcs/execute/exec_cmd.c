@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:28 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/11 22:12:31 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/12 10:18:07 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,28 +33,28 @@ static int	execute_builtin(t_ast_node *cmd, t_env_list **env)
 	return (status);
 }
 
-void handle_execve_error(char *cmd)
+void	handle_execve_error(char *cmd)
 {
-    if (errno == EACCES || errno == EPERM || errno == EISDIR || 
-        errno == ENOEXEC || errno == ETXTBSY)
-		{
-        perror(cmd);
-        free(cmd);
-        exit(126);
-    }
-    else if (errno == ENOENT || errno == ENOTDIR)
+	if (errno == EACCES || errno == EPERM || errno == EISDIR
+		|| errno == ENOEXEC || errno == ETXTBSY)
 	{
-        ft_putstr_fd(cmd, STDERR_FILENO);
-        ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-        free(cmd);
-        exit(127);
-    }
-    else
+		perror(cmd);
+		free(cmd);
+		exit(126);
+	}
+	else if (errno == ENOENT || errno == ENOTDIR)
 	{
-        perror(cmd);
-        free(cmd);
-        exit(127);
-    }
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+		free(cmd);
+		exit(127);
+	}
+	else
+	{
+		perror(cmd);
+		free(cmd);
+		exit(127);
+	}
 }
 
 static void	child_process(t_ast_node *cmd, t_env_list *env)
@@ -71,7 +71,7 @@ static void	child_process(t_ast_node *cmd, t_env_list *env)
 	if (!path)
 	{
 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-        ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 		free_array(envp);
 		exit(127);
 	}

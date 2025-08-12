@@ -9,16 +9,20 @@ SRC = minishell.c
 SRCS = srcs/env_var/env_list.c \
 		srcs/env_var/env_list2.c \
 		srcs/env_var/env_list3.c \
+		srcs/env_var/env_util.c \
 		srcs/parse/parsing.c \
 		srcs/parse/help.c \
 		srcs/parse/token.c \
 		srcs/parse/tree.c \
 		srcs/parse/tree_help.c \
 		srcs/parse/redir.c \
+		srcs/parse/redir2.c \
 		srcs/parse/var_expansion.c \
 		srcs/parse/var_expansion2.c \
 		srcs/execute/builtin.c \
 		srcs/execute/hdoc.c \
+		srcs/execute/hdoc2.c \
+		srcs/execute/hdoc_var.c \
 		srcs/execute/exec_help.c \
 		srcs/execute/exec.c \
 		srcs/execute/exec_cmd.c \
@@ -35,6 +39,7 @@ SRCS = srcs/env_var/env_list.c \
 		srcs/builtins/unset.c \
 		srcs/utils/utils.c \
 		srcs/utils/syntax.c \
+		srcs/utils/syntax2.c \
 		srcs/utils/syntax_help.c \
 		srcs/banner.c \
 		srcs/free.c \

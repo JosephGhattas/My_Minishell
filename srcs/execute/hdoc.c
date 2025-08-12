@@ -6,11 +6,28 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:29:02 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/11 23:35:12 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/12 12:38:23 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+char	*append_char(char *result, char c)
+{
+	char	*tmp;
+	char	*new;
+
+	tmp = ft_char_to_str(c);
+	if (!tmp)
+	{
+		free(result);
+		return (NULL);
+	}
+	new = ft_strjoin(result, tmp);
+	free(result);
+	free(tmp);
+	return (new);
+}
 
 char	*generate_heredoc_filename(void)
 {
@@ -40,125 +57,125 @@ int	fd_failed(t_redir	*redir, bool open)
 	return (-1);
 }
 
-static char	*expand_heredoc_line(const char *input, t_env_list *env)
-{
-	char	*result;
-	char	*temp;
-	char	*new_result;
-	int		i;
-	bool	escape_next;
+// static char	*expand_heredoc_line(const char *input, t_env_list *env)
+// {
+// 	char	*result;
+// 	char	*temp;
+// 	char	*new_result;
+// 	int		i;
+// 	bool	escape_next;
 
-	result = ft_strdup("");
-	if (!result)
-		return (NULL);
-	i = 0;
-	escape_next = false;
-	while (input[i])
-	{
-		if (escape_next)
-		{
-			temp = ft_char_to_str(input[i]);
-			if (!temp)
-				return (free(result), NULL);
-			new_result = ft_strjoin(result, temp);
-			free(result);
-			free(temp);
-			result = new_result;
-			escape_next = false;
-			i++;
-		}
-		else if (input[i] == '\\')
-		{
-			if (input[i + 1] == '\n')
-				i += 2;
-			else if (input[i + 1] != '\0')
-			{
-				escape_next = true;
-				i++;
-			}
-			else
-			{
-				temp = ft_char_to_str(input[i]);
-				if (!temp)
-					return (free(result), NULL);
-				new_result = ft_strjoin(result, temp);
-				free(result);
-				free(temp);
-				if (!new_result)
-					return (NULL);
-				result = new_result;
-				i++;
-			}
-		}
-		else if (input[i] == '$' && input[i + 1] != '\0' && input[i + 1] != ' ')
-		{
-			temp = expand_var(input, &i, env);
-			if (!temp)
-				return (free(result), NULL);
-			new_result = ft_strjoin(result, temp);
-			free(result);
-			free(temp);
-			result = new_result;
-		}
-		else
-		{
-			temp = ft_char_to_str(input[i]);
-			if (!temp)
-				return (free(result), NULL);
-			new_result = ft_strjoin(result, temp);
-			free(result);
-			free(temp);
-			result = new_result;
-			i++;
-		}
-	}
-	return (result);
-}
+// 	result = ft_strdup("");
+// 	if (!result)
+// 		return (NULL);
+// 	i = 0;
+// 	escape_next = false;
+// 	while (input[i])
+// 	{
+// 		if (escape_next)
+// 		{
+// 			temp = ft_char_to_str(input[i]);
+// 			if (!temp)
+// 				return (free(result), NULL);
+// 			new_result = ft_strjoin(result, temp);
+// 			free(result);
+// 			free(temp);
+// 			result = new_result;
+// 			escape_next = false;
+// 			i++;
+// 		}
+// 		else if (input[i] == '\\')
+// 		{
+// 			if (input[i + 1] == '\n')
+// 				i += 2;
+// 			else if (input[i + 1] != '\0')
+// 			{
+// 				escape_next = true;
+// 				i++;
+// 			}
+// 			else
+// 			{
+// 				temp = ft_char_to_str(input[i]);
+// 				if (!temp)
+// 					return (free(result), NULL);
+// 				new_result = ft_strjoin(result, temp);
+// 				free(result);
+// 				free(temp);
+// 				if (!new_result)
+// 					return (NULL);
+// 				result = new_result;
+// 				i++;
+// 			}
+// 		}
+// 		else if (input[i] == '$' && input[i + 1] != '\0' && input[i + 1] != ' ')
+// 		{
+// 			temp = expand_var(input, &i, env);
+// 			if (!temp)
+// 				return (free(result), NULL);
+// 			new_result = ft_strjoin(result, temp);
+// 			free(result);
+// 			free(temp);
+// 			result = new_result;
+// 		}
+// 		else
+// 		{
+// 			temp = ft_char_to_str(input[i]);
+// 			if (!temp)
+// 				return (free(result), NULL);
+// 			new_result = ft_strjoin(result, temp);
+// 			free(result);
+// 			free(temp);
+// 			result = new_result;
+// 			i++;
+// 		}
+// 	}
+// 	return (result);
+// }
 
-int	create_heredoc_file(t_redir *redir, t_env_list *env)
-{
-	int		fd;
-	char	*line;
-	char	*expanded_line;
+// int	create_heredoc_file(t_redir *redir, t_env_list *env)
+// {
+// 	int		fd;
+// 	char	*line;
+// 	char	*expanded_line;
 
-	redir->filename = generate_heredoc_filename();
-	if (!redir->filename)
-		return (-1);
-	fd = open(redir->filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
-	if (fd == -1)
-		return (fd_failed(redir, true));
-	while (1)
-	{
-		line = readline("> ");
-		if (!line)
-		{
-			close(fd);
-			unlink(redir->filename);
-			return (fd_failed(redir, false));
-		}
-		if (ft_strcmp(line, redir->delimiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		if (!redir->heredoc_quoted)
-		{
-			expanded_line = expand_heredoc_line(line, env);
-			free(line);
-			if (!expanded_line)
-			{
-				close(fd);
-				unlink(redir->filename);
-				return (fd_failed(redir, false));
-			}
-			line = expanded_line;
-		}
-		write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
-		free(line);
-	}
-	return (close(fd), 0);
-}
+// 	redir->filename = generate_heredoc_filename();
+// 	if (!redir->filename)
+// 		return (-1);
+// 	fd = open(redir->filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
+// 	if (fd == -1)
+// 		return (fd_failed(redir, true));
+// 	while (1)
+// 	{
+// 		line = readline("> ");
+// 		if (!line)
+// 		{
+// 			close(fd);
+// 			unlink(redir->filename);
+// 			return (fd_failed(redir, false));
+// 		}
+// 		if (ft_strcmp(line, redir->delimiter) == 0)
+// 		{
+// 			free(line);
+// 			break ;
+// 		}
+// 		if (!redir->heredoc_quoted)
+// 		{
+// 			expanded_line = expand_heredoc_line(line, env);
+// 			free(line);
+// 			if (!expanded_line)
+// 			{
+// 				close(fd);
+// 				unlink(redir->filename);
+// 				return (fd_failed(redir, false));
+// 			}
+// 			line = expanded_line;
+// 		}
+// 		write(fd, line, ft_strlen(line));
+// 		write(fd, "\n", 1);
+// 		free(line);
+// 	}
+// 	return (close(fd), 0);
+// }
 
 int	setup_heredocs(t_redir *list, t_env_list *env)
 {

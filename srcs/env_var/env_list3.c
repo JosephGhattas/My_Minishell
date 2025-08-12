@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:15 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/10 18:01:22 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/12 10:14:18 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,20 +43,6 @@ char	*extract_key_part(char *env_var)
 	}
 	key_str[index] = '\0';
 	return (key_str);
-}
-
-bool	equal(char *env)
-{
-	int	i;
-
-	i = 0;
-	while (env[i])
-	{
-		if (env[i] == '=')
-			return (true);
-		i++;
-	}
-	return (false);
 }
 
 static void	free_vars(char **var, int i)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_help.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 23:47:11 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/06 18:09:59 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:19:33 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,20 @@ static bool	process_redirection(const char *s, int *i)
 	return (false);
 }
 
+static bool	check_redirection_at_pos(const char *s, int *i)
+{
+	if (s[*i] == '<' || s[*i] == '>'
+		|| (ft_isdigit((unsigned char)s[*i])
+			&& s[*i + 1] != '\0' && ft_strchr("<>", s[*i + 1])))
+	{
+		if (process_redirection(s, i))
+			return (true);
+	}
+	else
+		(*i)++;
+	return (false);
+}
+
 bool	detect_redir_errors(const char *s)
 {
 	char	q;
@@ -70,53 +84,10 @@ bool	detect_redir_errors(const char *s)
 			if (s[i] == '\0')
 				break ;
 		}
-		if (q == 0 && (s[i] == '<' || s[i] == '>'
-				|| (ft_isdigit((unsigned char)s[i])
-					&& s[i + 1] != '\0'
-					&& ft_strchr("<>", s[i + 1]))))
-		{
-			if (process_redirection(s, &i))
-				return (true);
-		}
-		else
-			i++;
-	}
-	return (false);
-}
-
-bool	is_only_whitespace(const char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-	{
-		if (!ft_isspace((unsigned char)s[i]))
-			return (false);
-		i++;
-	}
-	return (true);
-}
-
-bool	detect_invalid_metachar(const char *s)
-{
-	const char	*bad = "\\;&(){}[]`";
-	char		q;
-	int			i;
-
-	q = 0;
-	i = 0;
-	while (s[i])
-	{
-		q = update_quote(q, s[i]);
-		if (q == 0 && ft_strchr(bad, s[i]))
-		{
-			ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
-			write(2, &s[i], 1);
-			ft_putstr_fd("'\n", 2);
+		if (q == 0 && check_redirection_at_pos(s, &i))
 			return (true);
-		}
-		i++;
+		else if (q != 0)
+			i++;
 	}
 	return (false);
 }
