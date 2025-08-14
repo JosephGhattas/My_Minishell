@@ -16,14 +16,27 @@ int	my_echo(int argc, char**argv)
 {
 	int	no_line;
 	int	i;
+	int	j;
 
 	no_line = 0;
 	i = 1;
-	if (argc > 1 && ft_strcmp(argv[1], "-n") == 0)
+	while (i < argc)
 	{
-		no_line = 1;
-		argc--;
-		argv++;
+		if (argv[i][0] == '-' && argv[i][1] != '\0')
+		{
+			j = 1;
+			while (argv[i][j] == 'n')
+				j++;
+			if (argv[i][j] == '\0')
+			{
+				no_line = 1;
+				i++;
+			}
+			else
+				break ;
+		}
+		else
+			break ;
 	}
 	while (i < argc)
 	{
