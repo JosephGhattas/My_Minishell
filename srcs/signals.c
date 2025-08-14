@@ -31,24 +31,32 @@ void	sig_handler_prompt(int sig)
 	}
 }
 
-void	sig_handler_exec(int sig)
-{
-	if (sig == SIGINT || sig == SIGQUIT)
-	{
-		g_sig = 128;
-		write(1, "\n", 1);
-	}
-}
-
 void	setup_signals_prompt(void)
 {
 	signal(SIGINT, sig_handler_prompt);
 	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 }
 
 void	setup_signals_exec(void)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	signal(SIGTSTP, SIG_DFL);
+	signal(SIGTSTP, SIG_IGN);
+}
+
+void	sig_handler_heredoc(int sig)
+{
+	if (sig == SIGINT)
+	{
+		g_sig = SIGINT;
+		write(1, "\n", 1);
+	}
+}
+
+void	setup_signals_heredoc(void)
+{
+	signal(SIGINT, sig_handler_heredoc);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 }
