@@ -84,15 +84,13 @@ int	my_exit(t_ast_node *cmd, int argc, char **argv, t_env_list **env)
 		write(2, "minishell: exit: ", 17);
 		write(2, argv[1], ft_strlen(argv[1]));
 		write(2, ": numeric argument required\n", 28);
-		free_ast(cmd);
-		free_env_list_full(*env);
+		frees(cmd, *env);
 		exit(2);
 	}
 	else if (argc > 2)
 		return (too_many_args());
 	else
 		code = (unsigned char)num;
-	free_ast(cmd);
-	free_env_list_full(*env);
+	frees(cmd, *env);
 	exit(code);
 }
