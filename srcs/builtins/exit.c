@@ -12,47 +12,86 @@
 
 #include "../../minishell.h"
 
-//handle updating the exit code && numeric range form 0 255
-int	is_numeric(const char *s)
+static int	ft_strtoll_core(const char *p, long long *num, int sign)
 {
-	int	i;
+	int	digit;
 
-	if (!s)
-		return (0);
-	i = 0;
-	if (s[0] == '-' || s[0] == '+')
-		i++;
-	while (s[i])
+	while (*p)
 	{
-		if (!ft_isdigit(s[i]))
+		if (*p < '0' || *p > '9')
 			return (0);
-		i++;
+		digit = *p - '0';
+		if (sign == 1)
+		{
+			if (*num > (LLONG_MAX - digit) / 10)
+				return (0);
+			*num = *num * 10 + digit;
+		}
+		else
+		{
+			if (*num < LLONG_MIN / 10)
+				return (0);
+			*num *= 10;
+			if (*num < LLONG_MIN + digit)
+				return (0);
+			*num -= digit;
+		}
+		p++;
 	}
+	return (1);
+}
+
+int	ft_strtoll(const char *str, long long *result)
+{
+	long long	num;
+	int			sign;
+	const char	*p;
+
+	num = 0;
+	sign = 1;
+	p = str;
+	if (*p == '-' || *p == '+')
+	{
+		if (*p == '-')
+			sign = -1;
+		p++;
+	}
+	if (*p == '\0')
+		return (0);
+	if (!ft_strtoll_core(p, &num, sign))
+		return (0);
+	*result = num;
+	return (1);
+}
+
+int	too_many_args(void)
+{
+	write(2, "minishell: exit: too many arguments\n", 36);
 	return (1);
 }
 
 int	my_exit(t_ast_node *cmd, int argc, char **argv, t_env_list **env)
 {
-	int	code;
+	int			code;
+	long long	num;
 
 	printf("exit\n");
-	if (argc > 2)
-	{
-		write(2, "minishell: exit: too many arguments\n", 36);
-		return (1);
-	}
 	(void)cmd;
 	if (argc == 1)
 		code = get_exit_status(*env);
-	else if (!is_numeric(argv[1]))
+	else if (!ft_strtoll(argv[1], &num))
 	{
 		write(2, "minishell: exit: ", 17);
 		write(2, argv[1], ft_strlen(argv[1]));
 		write(2, ": numeric argument required\n", 28);
-		code = 2;
+		free_ast(cmd);
+		free_env_list_full(*env);
+		exit(2);
 	}
+	else if (argc > 2)
+		return (too_many_args());
 	else
-		code = ft_atoi(argv[1]);
+		code = (unsigned char)num;
 	free_ast(cmd);
 	free_env_list_full(*env);
 	exit(code);
