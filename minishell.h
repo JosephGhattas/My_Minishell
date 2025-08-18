@@ -178,7 +178,7 @@ t_ast_node	*pipe_node(t_token *start, t_token *end,
 
 //execute
 
-void		handle_execve_error(char *cmd);
+void		handle_execve_error(char *original_cmd, char *resolved_path);
 int			execute_ast(t_ast_node *node, t_env_list **env);
 int			execute_pipe(t_ast_node *node, t_env_list **env);
 int			execute_command_node(t_ast_node *cmd, t_env_list **env);

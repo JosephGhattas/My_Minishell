@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:28 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/12 17:43:48 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/18 14:57:18 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ static void	child_process(t_ast_node *cmd, t_env_list *env)
 	path = find_path(cmd->args[0], envp);
 	if (!path)
 	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 		free_array(envp);
@@ -54,7 +55,7 @@ static void	child_process(t_ast_node *cmd, t_env_list *env)
 	setup_signals_exec();
 	execve(path, cmd->args, envp);
 	free_array(envp);
-	handle_execve_error(path);
+	handle_execve_error(cmd->args[0], path);
 }
 
 static int	get_exit_code_from_status(int status)
@@ -102,8 +103,15 @@ static int	execute_external(t_ast_node *cmd, t_env_list *env)
 
 int	execute_command_node(t_ast_node *cmd, t_env_list **env)
 {
-	if (!cmd || !cmd->argc || !cmd->args[0])
+	if (!cmd || !cmd->args)
 		return (1);
+	if (cmd->argc == 0)
+		return (0); 
+	if (cmd->args[0][0] == '\0')
+    {
+        ft_putstr_fd("minishell: '': command not found\n", STDERR_FILENO);
+        return (127);
+    }
 	if (is_builtin(cmd->args[0]))
 		return (execute_builtin(cmd, env));
 	else
