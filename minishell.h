@@ -112,9 +112,10 @@ char		update_quote(char current_quote, char c);
 
 //signals
 void		sig_handler_prompt(int sig);
-void		sig_handler_exec(int sig);
 void		setup_signals_prompt(void);
 void		setup_signals_exec(void);
+void		setup_signals_heredoc(void);
+void		sig_handler_heredoc(int sig);
 
 //env_list
 //void		init(int argc, char **argv, t_env_list **env_list, char **env);
@@ -252,8 +253,8 @@ void		free_env_list_full(t_env_list *env);
 void		free_tokens(t_token *tok);
 void		free_single_redir(t_redir *redir);
 void		free_redir_list(t_redir *head);
-
 void		free_ast(t_ast_node *node);
+void		frees(t_ast_node *tree, t_env_list *env);
 
 //rnd
 void		printbanner(void);

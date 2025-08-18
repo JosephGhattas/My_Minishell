@@ -12,13 +12,12 @@
 
 #include "../../minishell.h"
 
-int	my_echo(int argc, char**argv)
+static int	parse_n_flag(int argc, char **argv, int *no_line)
 {
-	int	no_line;
 	int	i;
 	int	j;
 
-	no_line = 0;
+	*no_line = 0;
 	i = 1;
 	while (i < argc)
 	{
@@ -29,7 +28,7 @@ int	my_echo(int argc, char**argv)
 				j++;
 			if (argv[i][j] == '\0')
 			{
-				no_line = 1;
+				*no_line = 1;
 				i++;
 			}
 			else
@@ -38,6 +37,15 @@ int	my_echo(int argc, char**argv)
 		else
 			break ;
 	}
+	return (i);
+}
+
+int	my_echo(int argc, char **argv)
+{
+	int	no_line;
+	int	i;
+
+	i = parse_n_flag(argc, argv, &no_line);
 	while (i < argc)
 	{
 		printf("%s", argv[i]);

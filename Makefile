@@ -38,6 +38,7 @@ SRCS = srcs/env_var/env_list.c \
 		srcs/builtins/export3.c \
 		srcs/builtins/unset.c \
 		srcs/utils/utils.c \
+		srcs/utils/utils2.c \
 		srcs/utils/syntax.c \
 		srcs/utils/syntax2.c \
 		srcs/utils/syntax_help.c \
