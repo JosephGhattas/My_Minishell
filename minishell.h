@@ -187,6 +187,7 @@ int			run_builtin(t_ast_node *cmd, int argc,
 				char **argv, t_env_list **envp);
 
 //herdocs handling
+char		*read_heredoc_line(void);
 char		*generate_heredoc_filename(void);
 int			create_heredoc_file(t_redir *redir, t_env_list *env);
 int			setup_heredocs(t_redir *list, t_env_list *env);

@@ -6,11 +6,17 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:14:17 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/18 09:05:22 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/18 12:41:31 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+static void handle_parent_sigint(int sig)
+{
+    (void)sig;
+    g_sig = SIGINT;  // Set global signal flag
+}
 
 char	*append_var(char *result, const char *input, int *i, t_env_list *env)
 {
@@ -29,18 +35,18 @@ char	*append_var(char *result, const char *input, int *i, t_env_list *env)
 	return (new);
 }
 
-static int	prepare_heredoc_file(t_redir *redir)
-{
-	int	fd;
+// static int	prepare_heredoc_file(t_redir *redir)
+// {
+// 	int	fd;
 
-	redir->filename = generate_heredoc_filename();
-	if (!redir->filename)
-		return (-1);
-	fd = open(redir->filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
-	if (fd == -1)
-		return (fd_failed(redir, true));
-	return (fd);
-}
+// 	redir->filename = generate_heredoc_filename();
+// 	if (!redir->filename)
+// 		return (-1);
+// 	fd = open(redir->filename, O_CREAT | O_WRONLY | O_TRUNC, 0600);
+// 	if (fd == -1)
+// 		return (fd_failed(redir, true));
+// 	return (fd);
+// }
 
 static int	process_heredoc_line(char *line, t_redir *redir,
 				t_env_list *env, int fd)
@@ -61,29 +67,103 @@ static int	process_heredoc_line(char *line, t_redir *redir,
 	return (0);
 }
 
-static int	fill_heredoc_file(int fd, t_redir *redir, t_env_list *env)
+// static int	fill_heredoc_file(int fd, t_redir *redir, t_env_list *env)
+// {
+// 	char	*line;
+
+// 	setup_signals_heredoc();
+// 	while (1)
+// 	{
+// 		if (g_sig == SIGINT)
+// 		{
+// 			free(line);
+// 			break ;
+// 		}
+// 		line = readline("> ");
+// 		if (g_sig == SIGINT)
+// 		{
+// 			free(line);
+// 			break ;
+// 		}
+// 		if (!line)
+// 		{
+// 			close(fd);
+// 			setup_signals_prompt();
+// 			return (fd_failed(redir, false));
+// 		}
+// 		if (ft_strcmp(line, redir->delimiter) == 0)
+// 		{
+// 			free(line);
+// 			break ;
+// 		}
+// 		if (process_heredoc_line(line, redir, env, fd) != 0)
+// 		{
+// 			free(line);
+// 			return (-1);
+// 		}
+// 		free(line);
+// 	}
+// 	setup_signals_prompt();
+// 	if (g_sig == SIGINT)
+// 	{
+// 		close(fd);
+// 		unlink(redir->filename);
+// 		free(redir->filename);
+// 		redir->filename = NULL;
+// 		// rl_cleanup_after_signal();
+// 		// rl_replace_line("", 0);
+// 		// rl_on_new_line();
+// 		return (-1);
+// 	}
+// 	return (0);
+// }
+
+// int	create_heredoc_file(t_redir *redir, t_env_list *env)
+// {
+// 	int	fd;
+
+// 	fd = prepare_heredoc_file(redir);
+// 	if (fd < 0)
+// 		return (fd);
+// 	if (fill_heredoc_file(fd, redir, env) != 0)
+// 	{
+// 		if (g_sig == SIGINT)
+// 			return (130);
+// 		return (-1);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }
+
+static void	handle_heredoc_child(t_redir *redir, t_env_list *env)
 {
+	int		fd;
 	char	*line;
 
-	setup_signals_heredoc();
+	g_sig = 0;
+	fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+	if (fd == -1)
+		exit(1);
+	//setup_signals_heredoc();
+	setup_signals_exec();
 	while (1)
 	{
-		if (g_sig == SIGINT)
-		{
-			free(line);
-			break ;
-		}
 		line = readline("> ");
-		if (g_sig == SIGINT)
-		{
-			free(line);
-			break ;
-		}
 		if (!line)
 		{
-			close(fd);
-			setup_signals_prompt();
-			return (fd_failed(redir, false));
+			// Check if it was interrupted by SIGINT
+			if (g_sig == SIGINT)
+			{
+				close(fd);
+				unlink(redir->filename);
+				exit(130);
+			}
+			// Otherwise it was EOF (Ctrl+D)
+			ft_putstr_fd("minishell: warning: here-document delimited by ", 2);
+			ft_putstr_fd("end-of-file (wanted `", 2);
+			ft_putstr_fd(redir->delimiter, 2);
+			ft_putstr_fd("')\n", 2);
+			break;
 		}
 		if (ft_strcmp(line, redir->delimiter) == 0)
 		{
@@ -93,112 +173,79 @@ static int	fill_heredoc_file(int fd, t_redir *redir, t_env_list *env)
 		if (process_heredoc_line(line, redir, env, fd) != 0)
 		{
 			free(line);
-			return (-1);
+			close(fd);
+			unlink(redir->filename);	
+			exit(1);
 		}
 		free(line);
 	}
-	setup_signals_prompt();
-	if (g_sig == SIGINT)
-	{
-		close(fd);
-		unlink(redir->filename);
-		free(redir->filename);
-		redir->filename = NULL;
-		// rl_cleanup_after_signal();
-		// rl_replace_line("", 0);
-		// rl_on_new_line();
-		return (-1);
-	}
-	return (0);
+	close(fd);
+	exit(0);
 }
-
-// static void	handle_heredoc_child(t_redir *redir, t_env_list *env)
-// {
-// 	int		fd;
-// 	char	*line;
-
-// 	fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
-// 	if (fd == -1)
-// 		exit(1);
-// 	signal(SIGINT, sig_handler_heredoc);
-// 	signal(SIGQUIT, SIG_IGN);
-// 	while (1)
-// 	{
-// 		line = readline("> ");
-// 		if (g_sig == SIGINT)  // Check for Ctrl+C first
-// 		{
-// 			free(line);
-// 			break;
-// 		}
-// 		if (!line)
-// 			break ;
-// 		if (ft_strcmp(line, redir->delimiter) == 0)
-// 		{
-// 			free(line);
-// 			break ;
-// 		}
-// 		if (process_heredoc_line(line, redir, env, fd) != 0)
-// 		{
-// 			free(line);
-// 			close(fd);
-// 			exit(1);
-// 		}
-// 		free(line);
-// 	}
-// 	close(fd);
-// 	if (g_sig == SIGINT)
-// 		exit(130);
-// 	exit(0);
-// }
 
 int	create_heredoc_file(t_redir *redir, t_env_list *env)
 {
-	int	fd;
+	pid_t	pid;
+	int		status;
+	void	(*old_sigint)(int);
+	void	(*old_sigquit)(int);
 
-	fd = prepare_heredoc_file(redir);
-	if (fd < 0)
-		return (fd);
-	if (fill_heredoc_file(fd, redir, env) != 0)
-	{
-		if (g_sig == SIGINT)
-			return (130);
+	g_sig = 0;
+	redir->filename = generate_heredoc_filename();
+	if (!redir->filename)
 		return (-1);
+	old_sigint = signal(SIGINT, handle_parent_sigint);
+	old_sigquit = signal(SIGQUIT, SIG_IGN);
+	pid = fork();
+	if (pid == -1)
+	{
+		signal(SIGINT, old_sigint);
+		signal(SIGQUIT, old_sigquit);
+		return (fd_failed(redir, false));
 	}
-	close(fd);
-	return (0);
+	if (pid == 0)
+	{
+		handle_heredoc_child(redir, env);
+		exit(0);
+	}
+	if (waitpid(pid, &status, 0) == -1 && errno == EINTR && g_sig == SIGINT)
+	{
+		kill(pid, SIGINT);
+		signal(SIGINT, SIG_IGN);
+        waitpid(pid, &status, 0);
+	}
+	signal(SIGINT, old_sigint);
+	signal(SIGQUIT, old_sigquit);
+	if (g_sig == SIGINT || (WIFEXITED(status) && WEXITSTATUS(status) == 130))
+	{
+        if (redir->filename)
+		{
+            unlink(redir->filename);
+            free(redir->filename);
+            redir->filename = NULL;
+        }
+        return (130);
+    }
+	else if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+	{
+        if (redir->filename)
+		{
+            unlink(redir->filename);
+            free(redir->filename);
+            redir->filename = NULL;
+        }
+        return (WEXITSTATUS(status));
+    }
+    // Handle child termination by signal
+    else if (WIFSIGNALED(status))
+	{
+        if (redir->filename)
+		{
+            unlink(redir->filename);
+            free(redir->filename);
+            redir->filename = NULL;
+        }
+        return (128 + WTERMSIG(status));
+    }
+    return (0);
 }
-
-// int	create_heredoc_file(t_redir *redir, t_env_list *env)
-// {
-// 	pid_t	pid;
-// 	int		status;
-// 	void	(*old_sigint)(int);
-// 	void	(*old_sigquit)(int);
-
-// 	redir->filename = generate_heredoc_filename();
-// 	if (!redir->filename)
-// 		return (-1);
-// 	old_sigint = signal(SIGINT, SIG_IGN);
-// 	old_sigquit = signal(SIGQUIT, SIG_IGN);
-// 	pid = fork();
-// 	if (pid == -1)
-// 		return (fd_failed(redir, false));
-// 	if (pid == 0)
-// 		handle_heredoc_child(redir, env);
-// 	waitpid(pid, &status, 0);
-// 	signal(SIGINT, old_sigint);
-// 	signal(SIGQUIT, old_sigquit);
-// 	if (WIFEXITED(status))
-// 	{
-// 		if (WEXITSTATUS(status) == 130)  // Heredoc interrupted by Ctrl+C
-// 		{
-// 			unlink(redir->filename);
-// 			free(redir->filename);
-// 			redir->filename = NULL;
-// 			return (130);
-// 		}
-// 		if (WEXITSTATUS(status) != 0)  // Other errors
-// 			return (-1);
-// 	}
-// 	return (0);
-// }

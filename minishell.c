@@ -92,6 +92,8 @@ int	main(int argc, char **argv, char **envp)
 			printf("exit\n");
 			break ;
 		}
+		if (g_sig == SIGINT)
+        	g_sig = 0;
 	}
 	free_env_list_full(env);
 	rl_clear_history();
