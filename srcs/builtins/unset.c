@@ -12,6 +12,15 @@
 
 #include "../../minishell.h"
 
+int	is_internal_var(const char *name)
+{
+	if (!name)
+		return (0);
+	if (name[0] == '?' && name[1] == '\0')
+		return (1);
+	return (0);
+}
+
 static int	is_valid_unset_key(const char *key)
 {
 	int	i;
@@ -59,6 +68,11 @@ int	my_unset(int argc, char **argv, t_env_list **env)
 	i = 1;
 	while (i < argc)
 	{
+		if (is_internal_var(argv[i]))
+		{
+			i++;
+			continue ;
+		}
 		if (!is_valid_unset_key(argv[i]))
 		{
 			printf("unset: `%s': not a valid identifier\n", argv[i]);

@@ -26,16 +26,11 @@ static void	init(int argc, char **argv, t_env_list **env_list, char **env)
 int	handle_execution(t_ast_node *tree, t_env_list **env)
 {
 	int	exit_status;
+	int	heredoc_status;
 
-	if (setup_all_heredocs(tree, *env) != 0)
-	{
-		if (g_sig == SIGINT)
-			return (130);
-		if (setup_all_heredocs(tree, *env) == 130)
-			return (130);
-		perror("Heredoc interrupted");
-		return (1);
-	}
+	heredoc_status = setup_all_heredocs(tree, *env);
+	if (heredoc_status != 0)
+		return (heredoc_status);
 	exit_status = execute_ast(tree, env);
 	update_exit_status(env, exit_status);
 	return (exit_status);
@@ -93,9 +88,8 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		}
 		if (g_sig == SIGINT)
-        	g_sig = 0;
+			g_sig = 0;
 	}
-	free_env_list_full(env);
-	rl_clear_history();
+	main_free(env);
 	return (last_exit_code);
 }

@@ -242,6 +242,7 @@ int			process_arg(t_env_list **env, char *arg);
 //unset
 void		remove_env_var(t_env_list **env, const char *key);
 int			my_unset(int argc, char **argv, t_env_list **env);
+int			is_internal_var(const char *name);
 //
 int			my_env(int argc, char **argv, t_env_list **env);
 int			my_echo(int argc, char**argv);
@@ -256,6 +257,7 @@ void		free_single_redir(t_redir *redir);
 void		free_redir_list(t_redir *head);
 void		free_ast(t_ast_node *node);
 void		frees(t_ast_node *tree, t_env_list *env);
+void		main_free(t_env_list *env);
 
 //rnd
 void		printbanner(void);

@@ -25,7 +25,7 @@ int	my_env(int argc, char **argv, t_env_list **env)
 	cur = *env;
 	while (cur)
 	{
-		if (cur->equal && cur->name)
+		if (!is_internal_var(cur->name) && cur->equal && cur->name)
 			printf("%s=%s\n", cur->type, cur->name);
 		cur = cur->next;
 	}

@@ -40,7 +40,8 @@ void	print_sorted_env(t_env_list *env)
 	i = 0;
 	while (tmp)
 	{
-		arr[i++] = tmp;
+		if (!is_internal_var(tmp->name))
+			arr[i++] = tmp;
 		tmp = tmp->next;
 	}
 	sort_env_array(arr, count);
@@ -62,6 +63,11 @@ int	process_arg(t_env_list **env, char *arg)
 		key = ft_strdup(arg);
 	if (!key)
 		return (1);
+	if (is_internal_var(key))
+	{
+		free(key);
+		return (0);
+	}
 	if (!is_valid_identifier(key))
 	{
 		write(2, "minishell: export: `", 21);

@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 00:32:30 by jgh               #+#    #+#             */
-/*   Updated: 2025/08/18 00:48:24 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/18 12:50:04 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,12 @@
 void	frees(t_ast_node *tree, t_env_list *env)
 {
 	free_ast(tree);
+	free_env_list_full(env);
+	rl_clear_history();
+}
+
+void	main_free(t_env_list *env)
+{
 	free_env_list_full(env);
 	rl_clear_history();
 }

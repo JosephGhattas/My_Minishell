@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:29:02 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/18 08:13:23 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/18 14:33:20 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,22 +85,27 @@ int	setup_heredocs(t_redir *list, t_env_list *env)
 
 int	setup_all_heredocs(t_ast_node *node, t_env_list *env)
 {
+	int	ret;
+
 	if (!node)
 		return (0);
 	if (node->type == NODE_COMMAND)
 	{
-		if (setup_heredocs(node->redirections, env) != 0)
-			return (1);
+		ret = setup_heredocs(node->redirections, env);
+		if (ret != 0)
+			return (ret);
 	}
 	if (node->left)
 	{
-		if (setup_all_heredocs(node->left, env) != 0)
-			return (1);
+		ret = setup_all_heredocs(node->left, env);
+		if (ret != 0)
+			return (ret);
 	}
 	if (node->right)
 	{
-		if (setup_all_heredocs(node->right, env) != 0)
-			return (1);
+		ret = setup_all_heredocs(node->right, env);
+		if (ret != 0)
+			return (ret);
 	}
 	return (0);
 }
