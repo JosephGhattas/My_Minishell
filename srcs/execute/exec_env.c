@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:32 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/18 14:59:56 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/18 15:07:11 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,14 +91,14 @@ char	**env_list_to_envp(t_env_list *env)
 void	handle_execve_error(char *original_cmd, char *resolved_path)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
-    ft_putstr_fd(original_cmd, STDERR_FILENO);
-    ft_putstr_fd(": ", STDERR_FILENO);
-    ft_putstr_fd(strerror(errno), STDERR_FILENO);
-    ft_putstr_fd("\n", STDERR_FILENO);
-    free(resolved_path);
-	 if (errno == EACCES || errno == EPERM || errno == EISDIR || 
-        errno == ENOEXEC || errno == ETXTBSY)
-        exit(126);
-    else
-        exit(127);
+	ft_putstr_fd(original_cmd, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	ft_putstr_fd(strerror(errno), STDERR_FILENO);
+	ft_putstr_fd("\n", STDERR_FILENO);
+	free(resolved_path);
+	if (errno == EACCES || errno == EPERM || errno == EISDIR
+		|| errno == ENOEXEC || errno == ETXTBSY)
+		exit(126);
+	else
+		exit(127);
 }

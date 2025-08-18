@@ -6,7 +6,7 @@
 /*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:28 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/18 14:57:18 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/18 15:06:13 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,12 +106,12 @@ int	execute_command_node(t_ast_node *cmd, t_env_list **env)
 	if (!cmd || !cmd->args)
 		return (1);
 	if (cmd->argc == 0)
-		return (0); 
+		return (0);
 	if (cmd->args[0][0] == '\0')
-    {
-        ft_putstr_fd("minishell: '': command not found\n", STDERR_FILENO);
-        return (127);
-    }
+	{
+		ft_putstr_fd("minishell: '': command not found\n", STDERR_FILENO);
+		return (127);
+	}
 	if (is_builtin(cmd->args[0]))
 		return (execute_builtin(cmd, env));
 	else

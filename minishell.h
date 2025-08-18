@@ -198,6 +198,24 @@ char		*append_char(char *result, char c);
 char		*append_var(char *result, const char *input,
 				int *i, t_env_list *env);
 
+//hdoc
+void		handle_heredoc_child(t_redir *redir, t_env_list *env);
+int			wait_for_heredoc_child(pid_t pid, int *status);
+int			interpret_child_status(int status, t_redir *redir);
+pid_t		heredoc_setup_and_fork(void (**old_sigint)(int),
+				void (**old_sigquit)(int));
+int			heredoc_parent_wait_and_restore(pid_t pid,
+				void (*old_sigint)(int), void (*old_sigquit)(int),
+				t_redir *redir);
+void		heredoc_read_loop(t_redir *redir, t_env_list *env, int fd);
+void		heredoc_process_failure(char *line, t_redir *redir, int fd);
+int			heredoc_handle_null_line(t_redir *redir, int fd);
+void		unlink_and_free_filename(t_redir *redir);
+int			open_heredoc_fd(const char *filename);
+int			process_heredoc_line(char *line, t_redir *redir,
+				t_env_list *env, int fd);
+void		handle_parent_sigint(int sig);
+
 //redirections
 int			setup_redirections(t_redir *redir);
 int			open_redirection_file(t_redir *redir);
