@@ -30,7 +30,10 @@ int	handle_execution(t_ast_node *tree, t_env_list **env)
 
 	heredoc_status = setup_all_heredocs(tree, *env);
 	if (heredoc_status != 0)
+	{
+		update_exit_status(env, heredoc_status);
 		return (heredoc_status);
+	}
 	exit_status = execute_ast(tree, env);
 	update_exit_status(env, exit_status);
 	return (exit_status);

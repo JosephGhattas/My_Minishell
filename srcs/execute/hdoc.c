@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hdoc.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:29:02 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/18 14:33:20 by jgh              ###   ########.fr       */
+/*   Updated: 2025/08/18 17:14:06 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,9 @@ int	setup_heredocs(t_redir *list, t_env_list *env)
 			if (ret != 0)
 			{
 				if (ret == 130)
+				{
 					return (130);
+				}
 				else
 				{
 					if (g_sig != SIGINT)
