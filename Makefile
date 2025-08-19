@@ -1,6 +1,6 @@
 NAME = minishell
 
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR)
 
 LIBFT_DIR =		srcs/utils/nolibft

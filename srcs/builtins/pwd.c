@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:27:51 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/05 15:27:53 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/19 10:46:13 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	my_pwd(t_env_list **env)
 	else
 	{
 		cwd = safe_getcwd();
-		if (!*cwd)
+		if (!cwd)
 		{
 			perror("pwd");
 			return (1);

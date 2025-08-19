@@ -17,8 +17,12 @@ static int	count_tmp(t_env_list *tmp)
 	int			count;
 
 	count = 0;
-	while (tmp && ++count)
+	while (tmp)
+	{
+		if (!is_internal_var(tmp->type))
+			count++;
 		tmp = tmp->next;
+	}
 	return (count);
 }
 
@@ -40,7 +44,7 @@ void	print_sorted_env(t_env_list *env)
 	i = 0;
 	while (tmp)
 	{
-		if (!is_internal_var(tmp->name))
+		if (!is_internal_var(tmp->type))
 			arr[i++] = tmp;
 		tmp = tmp->next;
 	}
@@ -63,18 +67,13 @@ int	process_arg(t_env_list **env, char *arg)
 		key = ft_strdup(arg);
 	if (!key)
 		return (1);
-	if (is_internal_var(key))
-	{
-		free(key);
-		return (0);
-	}
 	if (!is_valid_identifier(key))
 	{
 		write(2, "minishell: export: `", 21);
 		write(2, arg, ft_strlen(arg));
 		write(2, "': not a valid identifier\n", 27);
 		free(key);
-		return (0);
+		return (1);
 	}
 	free(key);
 	return (update_or_add_env_export(env, arg));

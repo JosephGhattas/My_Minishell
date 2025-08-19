@@ -16,7 +16,7 @@ int	is_internal_var(const char *name)
 {
 	if (!name)
 		return (0);
-	if (name[0] == '?' && name[1] == '\0')
+	if (ft_strcmp((char *)name, "?") == 0)
 		return (1);
 	return (0);
 }
@@ -77,7 +77,7 @@ int	my_unset(int argc, char **argv, t_env_list **env)
 		{
 			printf("unset: `%s': not a valid identifier\n", argv[i]);
 			i++;
-			continue ;
+			return (1);
 		}
 		remove_env_var(env, argv[i]);
 		i++;
