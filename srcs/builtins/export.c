@@ -12,6 +12,15 @@
 
 #include "../../minishell.h"
 
+static int	should_skip_var(char *var_name)
+{
+	if (!var_name)
+		return (0);
+	if (ft_strcmp(var_name, "?") == 0 || ft_strcmp(var_name, "_") == 0)
+		return (1);
+	return (0);
+}
+
 static int	count_tmp(t_env_list *tmp)
 {
 	int			count;
@@ -19,7 +28,7 @@ static int	count_tmp(t_env_list *tmp)
 	count = 0;
 	while (tmp)
 	{
-		if (!is_internal_var(tmp->type))
+		if (!should_skip_var(tmp->type))
 			count++;
 		tmp = tmp->next;
 	}
@@ -44,7 +53,7 @@ void	print_sorted_env(t_env_list *env)
 	i = 0;
 	while (tmp)
 	{
-		if (!is_internal_var(tmp->type))
+		if (!should_skip_var(tmp->type))
 			arr[i++] = tmp;
 		tmp = tmp->next;
 	}
