@@ -84,6 +84,7 @@ int	main(int argc, char **argv, char **envp)
 			g_sig = 0;
 		}
 		status = process_input(&env);
+		update_exit_status(&env, status);
 		if (status == -1)
 		{
 			last_exit_code = get_exit_status(env);

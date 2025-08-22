@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:28 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/18 17:16:27 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/22 15:26:36 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ static int	execute_external(t_ast_node *cmd, t_env_list *env)
 
 int	execute_command_node(t_ast_node *cmd, t_env_list **env)
 {
+	
 	if (!cmd || !cmd->args)
 		return (1);
 	if (cmd->argc == 0)
