@@ -58,7 +58,7 @@ static int	process_input(t_env_list **env)
 	}
 	add_history(input);
 	if (detect_syntax_errors(input))
-		return (free(input), 2);
+		return (update_exit_status(env, 2), free(input), 2);
 	tree = parse_input(input, *env);
 	free(input);
 	if (!tree)
@@ -84,7 +84,6 @@ int	main(int argc, char **argv, char **envp)
 			g_sig = 0;
 		}
 		status = process_input(&env);
-		update_exit_status(&env, status);
 		if (status == -1)
 		{
 			last_exit_code = get_exit_status(env);

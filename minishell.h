@@ -219,6 +219,7 @@ void		handle_parent_sigint(int sig);
 //redirections
 int			setup_redirections(t_redir *redir);
 int			open_redirection_file(t_redir *redir);
+int			execute_only_redirs(t_redir *redir);
 
 //exec_env
 int			env_list_size(t_env_list *env);

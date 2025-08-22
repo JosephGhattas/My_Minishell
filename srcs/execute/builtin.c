@@ -46,3 +46,18 @@ int	run_builtin(t_ast_node *cmd, int argc, char **argv, t_env_list **envp)
 		return (my_exit(cmd, argc, argv, envp));
 	return (1);
 }
+
+int	execute_only_redirs(t_redir *redir)
+{
+	int	fd;
+
+	while (redir)
+	{
+		fd = open_redirection_file(redir);
+		if (fd == -1)
+			return (1);
+		close(fd);
+		redir = redir->next;
+	}
+	return (0);
+}

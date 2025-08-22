@@ -6,7 +6,7 @@
 /*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:28:28 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/22 15:26:36 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/22 18:08:37 by jghattas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,14 @@ static int	execute_external(t_ast_node *cmd, t_env_list *env)
 
 int	execute_command_node(t_ast_node *cmd, t_env_list **env)
 {
-	
 	if (!cmd || !cmd->args)
 		return (1);
 	if (cmd->argc == 0)
+	{
+		if (cmd->redirections)
+			return (execute_only_redirs(cmd->redirections));
 		return (0);
+	}
 	if (cmd->args[0][0] == '\0')
 	{
 		ft_putstr_fd("minishell: '': command not found\n", STDERR_FILENO);
