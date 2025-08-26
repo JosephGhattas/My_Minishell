@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hdoc.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jghattas <jghattas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgh <jgh@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:29:02 by jghattas          #+#    #+#             */
-/*   Updated: 2025/08/18 17:14:06 by jghattas         ###   ########.fr       */
+/*   Updated: 2025/08/24 23:39:25 by jgh              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	setup_all_heredocs(t_ast_node *node, t_env_list *env)
 	int	ret;
 
 	if (!node)
-		return (0);
+		return (1);
 	if (node->type == NODE_COMMAND)
 	{
 		ret = setup_heredocs(node->redirections, env);
