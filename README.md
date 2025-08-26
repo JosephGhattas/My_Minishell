@@ -152,4 +152,5 @@ Exit with `Ctrl-D` or the `exit` builtin.
 ## 👨‍💻 Author  
 
 **Joseph Ghattas**  
-42 Beirut — Chemistry student turned systems programmer  
+42 Beirut  & Lebanese University — Chemistry student turned systems programmer  
+GitHub: JosephGhattas
